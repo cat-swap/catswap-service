@@ -1,0 +1,25 @@
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigService } from '@nestjs/config';
+
+@Module({
+  imports: [
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('redis.host', 'localhost'),
+          port: configService.get<number>('redis.port', 6379),
+          password: configService.get<string>('redis.password'),
+        },
+      }),
+    }),
+    BullModule.registerQueue(
+      { name: 'swap' },
+      { name: 'liquidity' },
+      { name: 'sync' },
+    ),
+  ],
+  exports: [BullModule],
+})
+export class QueuesModule {}

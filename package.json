@@ -9,14 +9,14 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "build:frontend": "npm run build --workspace=packages/frontend",
+    "build:backend": "npm run build --workspace=packages/backend",
     "clean": "npm run clean --workspaces --if-present",
-    "clean:frontend": "npm run clean --workspace=packages/frontend --if-present",
-    "start:dev": "npm run start --workspace=packages/frontend",
+    "start:dev": "concurrently \"npm run start:dev:api\" \"npm run start:frontend\"",
+    "start:dev:api": "npm run start:dev --workspace=packages/backend",
+    "start:frontend": "npm run start --workspace=packages/frontend",
     "install:all": "npm install",
     "lint": "npm run lint --workspaces --if-present",
-    "lint:frontend": "npm run lint --workspace=packages/frontend",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "typecheck:frontend": "npm run typecheck --workspace=packages/frontend"
+    "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "keywords": [
     "monorepo",
@@ -24,7 +24,8 @@
     "dex",
     "bitcoin",
     "catena",
-    "frontend"
+    "frontend",
+    "backend"
   ],
   "author": "",
   "license": "MIT",
