@@ -50,32 +50,57 @@ There should be one canonical token path.
 
 ## Typography
 
-### Required Font
+### Font Strategy
 
-The project must use **HarmonyOS Sans** to remain visually aligned with OKX.
+The project follows **OKX's System Font Stack strategy**.
+
+> **No external font CDN. Zero font loading latency. Optimal performance.**
+
+Instead of downloading custom fonts, we leverage the operating system's native fonts. This approach:
+
+- Eliminates font loading delays (0ms download time)
+- Prevents layout shifts (FOUT/FOIT)
+- Provides familiar, platform-optimized typography
+- Supports all languages out of the box
+
+### Font Stack
+
+```css
+font-family:
+  /* Western System Fonts */
+  -apple-system,          /* macOS/iOS: San Francisco */
+  BlinkMacSystemFont,     /* Chrome on macOS */
+  "Segoe UI",             /* Windows */
+  Roboto,                 /* Android/Linux */
+  Helvetica,
+  Arial,
+  /* Chinese System Fonts (CJK) */
+  "PingFang SC",          /* Apple: 苹方 */
+  "Hiragino Sans GB",     /* macOS: 冬青黑体 */
+  "HarmonyOS Sans SC",    /* Huawei: 鸿蒙字体 */
+  "Microsoft YaHei",      /* Windows: 微软雅黑 */
+  "Source Han Sans SC",   /* Adobe: 思源黑体 */
+  "Noto Sans SC",         /* Google: Noto (fallback) */
+  /* Final Fallback */
+  sans-serif;
+```
 
 ### Rules
 
-- `HarmonyOS Sans` must be the first font in `tailwind.config.js -> theme.extend.fontFamily.sans`
-- global font setup must be defined in `src/index.css`
-- components and pages should use `font-sans`
-- avoid repeating raw `font-family` declarations in feature components
-
-### Recommended Setup
-
-- host font files locally
-- load via `@font-face`
-- use `font-display: swap`
+- **No external font imports** (removed CDN dependency)
+- Use `font-sans` in all components
+- No page-level `font-family` overrides
 
 ### Do
 
-- use `font-sans`
-- rely on shared font tokens
+- Use `font-sans` everywhere
+- Trust the system font stack
 
 ### Don't
 
-- import fonts from random external URLs unless explicitly approved
-- redefine `font-family` in page components
+- Import fonts from external CDNs
+- Add `@font-face` declarations
+- Override font-family in components
 
 ---
 
@@ -396,8 +421,8 @@ When choosing between options, follow this order:
 ## Short Version
 
 - Follow OKX visually
-- Implement through one design system
-- Keep fonts/colors/tokens centralized
+- **Use system font stack (no external fonts)**
+- Keep colors/tokens centralized
 - Use Tailwind semantic tokens
 - Build shared UI primitives
 - Avoid dual-track styling systems

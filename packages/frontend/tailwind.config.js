@@ -33,24 +33,26 @@ export default {
           hover: 'var(--color-sell-hover)',
           light: 'var(--color-sell-light)',
         },
-        // OKX reference colors (use success/danger instead)
-        // Deprecated: will be removed in future versions
-        okx: {
-          buy: '#25A750',
-          'buy-hover': '#1E8A42',
-          'buy-light': 'rgba(37, 167, 80, 0.1)',
-          sell: '#CA3F64',
-          'sell-hover': '#B03556',
-          'sell-light': 'rgba(202, 63, 100, 0.1)',
-        },
       },
+      // OKX-style System Font Stack
+      // Optimized for cross-platform consistency with Chinese support
       fontFamily: {
         sans: [
-          'HarmonyOS Sans',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Roboto',
+          // System fonts (Western)
+          '-apple-system',        // macOS/iOS San Francisco
+          'BlinkMacSystemFont',   // Chrome on macOS
+          '"Segoe UI"',           // Windows
+          'Roboto',               // Android/Linux
+          'Helvetica',
+          'Arial',
+          // Chinese fonts (CJK)
+          '"PingFang SC"',        // Apple Chinese (苹方)
+          '"Hiragino Sans GB"',   // macOS Chinese (冬青黑体)
+          '"HarmonyOS Sans SC"',  // Huawei HarmonyOS Chinese
+          '"Microsoft YaHei"',    // Windows Chinese (微软雅黑)
+          '"Source Han Sans SC"', // Adobe Source Han (思源黑体)
+          '"Noto Sans SC"',       // Google Noto (备用)
+          // Fallback
           'sans-serif',
         ],
       },

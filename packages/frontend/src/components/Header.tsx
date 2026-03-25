@@ -1,20 +1,21 @@
 import * as React from 'react';
-import { Sun, Moon, ChevronDown } from 'lucide-react';
+import { Sun, Moon, ChevronDown, Wallet, LogOut } from 'lucide-react';
 import { WalletInfo } from '../types';
-import { Button } from './ui/Button';
+
+type Page = 'spot' | 'perps' | 'pools';
 
 interface HeaderProps {
   wallet: WalletInfo;
   onConnectWallet: () => void;
   onDisconnect: () => void;
-  currentPage?: string;
-  onPageChange?: (page: string) => void;
-  theme?: 'dark' | 'light';
-  onToggleTheme?: () => void;
+  currentPage: Page;
+  onPageChange: (page: Page) => void;
+  theme: 'dark' | 'light';
+  onToggleTheme: () => void;
 }
 
-const navItems = [
-  { id: 'swap', label: 'Swap' },
+const navItems: { id: Page; label: string }[] = [
+  { id: 'spot', label: 'Spot' },
   { id: 'perps', label: 'Perps' },
   { id: 'pools', label: 'Pools' },
 ];
@@ -23,15 +24,24 @@ export const Header: React.FC<HeaderProps> = ({
   wallet,
   onConnectWallet,
   onDisconnect,
-  currentPage = 'swap',
+  currentPage,
   onPageChange,
-  theme = 'dark',
+  theme,
   onToggleTheme,
 }) => {
   const [showDropdown, setShowDropdown] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const disconnectButtonRef = React.useRef<HTMLButtonElement>(null);
+  const [isScrolled, setIsScrolled] = React.useState(false);
+
+  // Handle scroll effect
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Close dropdown when clicking outside
   React.useEffect(() => {
@@ -50,58 +60,21 @@ export const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle keyboard navigation for dropdown
+  // Handle keyboard navigation
   React.useEffect(() => {
     if (!showDropdown) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Escape closes dropdown
       if (e.key === 'Escape') {
         e.preventDefault();
         setShowDropdown(false);
         buttonRef.current?.focus();
-        return;
-      }
-
-      // Tab navigation - close on tab out
-      if (e.key === 'Tab') {
-        const focusableElements = dropdownRef.current?.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        
-        if (!focusableElements || focusableElements.length === 0) {
-          setShowDropdown(false);
-          return;
-        }
-
-        const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-        if (e.shiftKey && document.activeElement === firstElement) {
-          // Shift+Tab from first element - close and return to trigger
-          e.preventDefault();
-          setShowDropdown(false);
-          buttonRef.current?.focus();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          // Tab from last element - close dropdown
-          setShowDropdown(false);
-        }
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    
-    // Focus first menu item when opened
-    setTimeout(() => {
-      disconnectButtonRef.current?.focus();
-    }, 10);
-
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [showDropdown]);
-
-  const handleDropdownToggle = () => {
-    setShowDropdown(!showDropdown);
-  };
 
   const handleDisconnect = () => {
     onDisconnect();
@@ -109,101 +82,156 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background transition-colors duration-200">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-2 cursor-pointer">
-          <span className="text-2xl text-success">◉</span>
-          <span className="text-xl font-bold text-foreground tracking-tight">
-            CatSwap
-          </span>
-        </div>
-
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-1" role="tablist">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              role="tab"
-              aria-selected={currentPage === item.id}
-              onClick={() => onPageChange?.(item.id)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                currentPage === item.id
-                  ? 'text-foreground bg-background-secondary'
-                  : 'text-foreground-secondary hover:text-foreground hover:bg-background-tertiary'
-              }`}
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        isScrolled 
+          ? 'bg-[var(--bg-primary)]/95 backdrop-blur-md border-b border-[var(--border-primary)]' 
+          : 'bg-[var(--bg-primary)] border-b border-transparent'
+      }`}
+    >
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-14 sm:h-16 flex items-center justify-between">
+          {/* Logo & Brand */}
+          <div className="flex items-center gap-8">
+            <div 
+              className="flex items-center gap-2 cursor-pointer group"
+              onClick={() => onPageChange('spot')}
             >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-
-        {/* Right Section */}
-        <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleTheme}
-            aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          >
-            {theme === 'dark' ? (
-              <Sun className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
-          </Button>
-
-          {/* Wallet Section */}
-          {wallet.connected ? (
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-foreground px-3 py-1.5 rounded-lg bg-background-tertiary">
-                {wallet.balance.toFixed(4)} BTC
-              </span>
-              <div className="relative">
-                <button
-                  ref={buttonRef}
-                  onClick={handleDropdownToggle}
-                  aria-expanded={showDropdown}
-                  aria-haspopup="menu"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background-tertiary hover:bg-background-secondary transition-colors border border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                >
-                  <span className="text-sm text-foreground-secondary">
-                    {wallet.address}
-                  </span>
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-xs text-white font-bold">
-                    ₿
-                  </div>
-                  <ChevronDown
-                    className={`h-4 w-4 text-foreground-secondary transition-transform duration-200 ${
-                      showDropdown ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {showDropdown && (
-                  <div
-                    ref={dropdownRef}
-                    role="menu"
-                    className="absolute top-full right-0 mt-2 py-2 px-1 min-w-[150px] rounded-lg bg-background-secondary border border-border shadow-lg z-50"
-                  >
-                    <button
-                      ref={disconnectButtonRef}
-                      role="menuitem"
-                      onClick={handleDisconnect}
-                      className="w-full text-left px-3 py-2 text-sm text-error hover:bg-background-tertiary rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
-                    >
-                      Disconnect
-                    </button>
-                  </div>
-                )}
+              {/* Logo Icon */}
+              <div className="w-7 h-7 rounded-md bg-[var(--text-primary)] flex items-center justify-center">
+                <span className="text-[var(--bg-primary)] font-bold text-sm">C</span>
               </div>
+              <span className="text-lg font-bold text-[var(--text-primary)] tracking-tight">
+                CatSwap
+              </span>
             </div>
-          ) : (
-            <Button onClick={onConnectWallet}>Connect Wallet</Button>
-          )}
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => onPageChange(item.id)}
+                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                    currentPage === item.id
+                      ? 'text-[var(--text-primary)]'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {item.label}
+                  {currentPage === item.id && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[var(--text-primary)] rounded-full" />
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Theme Toggle */}
+            <button
+              onClick={onToggleTheme}
+              className="p-2 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-all duration-200"
+              aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4" />
+              ) : (
+                <Moon className="w-4 h-4" />
+              )}
+            </button>
+
+            {/* Wallet Section */}
+            {wallet.connected ? (
+              <div className="flex items-center gap-2">
+                {/* Balance Display */}
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md bg-[var(--bg-tertiary)] border border-[var(--border-primary)]">
+                  <span className="text-sm font-medium text-[var(--text-primary)]">
+                    {wallet.balance.toFixed(4)}
+                  </span>
+                  <span className="text-xs text-[var(--text-secondary)]">BTC</span>
+                </div>
+
+                {/* Wallet Dropdown */}
+                <div className="relative">
+                  <button
+                    ref={buttonRef}
+                    onClick={() => setShowDropdown(!showDropdown)}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)] border border-[var(--border-primary)] transition-all duration-200"
+                  >
+                    <div className="w-5 h-5 rounded-full bg-[var(--bg-quaternary)] flex items-center justify-center">
+                      <Wallet className="w-3 h-3 text-[var(--text-secondary)]" />
+                    </div>
+                    <span className="text-sm text-[var(--text-primary)] hidden sm:inline">
+                      {wallet.address}
+                    </span>
+                    <span className="text-sm text-[var(--text-primary)] sm:hidden">
+                      {wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[var(--text-tertiary)] transition-transform duration-200 ${
+                        showDropdown ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {showDropdown && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute top-full right-0 mt-2 py-1 min-w-[180px] rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] shadow-lg z-50"
+                    >
+                      {/* Mobile Balance */}
+                      <div className="sm:hidden px-4 py-2 border-b border-[var(--border-primary)]">
+                        <span className="text-xs text-[var(--text-secondary)]">Balance</span>
+                        <div className="text-sm font-medium text-[var(--text-primary)]">
+                          {wallet.balance.toFixed(4)} BTC
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={handleDisconnect}
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-sell)] hover:bg-[var(--bg-tertiary)] transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Disconnect
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={onConnectWallet}
+                className="px-4 py-1.5 rounded-md bg-[var(--text-primary)] text-[var(--bg-primary)] text-sm font-medium hover:opacity-90 transition-all duration-200"
+              >
+                <span className="hidden sm:inline">Connect Wallet</span>
+                <span className="sm:hidden">Connect</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Mobile Navigation */}
+      <nav className="md:hidden flex items-center justify-around border-t border-[var(--border-primary)] bg-[var(--bg-primary)]">
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => onPageChange(item.id)}
+            className={`flex-1 py-3 text-xs font-medium transition-all duration-200 ${
+              currentPage === item.id
+                ? 'text-[var(--text-primary)] border-b-2 border-[var(--text-primary)]'
+                : 'text-[var(--text-secondary)]'
+            }`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </nav>
     </header>
   );
 };
+
+export default Header;

@@ -23,27 +23,39 @@ There are 3 layers:
 
 ## Typography Tokens
 
-### Font Family
+### Font Strategy
 
-Primary font:
+**System Font Stack** - No external font dependencies.
 
-- `HarmonyOS Sans`
+Following OKX's approach: leverage native OS fonts for optimal performance and cross-platform consistency.
 
-Fallback stack:
+### Font Stack (Ordered by Priority)
 
-- `-apple-system`
-- `BlinkMacSystemFont`
-- `Segoe UI`
-- `Roboto`
-- `sans-serif`
+| Priority | Font | Platform |
+|----------|------|----------|
+| 1 | `-apple-system` | macOS, iOS (San Francisco) |
+| 2 | `BlinkMacSystemFont` | Chrome on macOS |
+| 3 | `Segoe UI` | Windows |
+| 4 | `Roboto` | Android, Linux |
+| 5 | `Helvetica` | Legacy macOS |
+| 6 | `Arial` | Universal fallback |
+| 7 | `PingFang SC` | Apple Chinese (苹方) |
+| 8 | `Hiragino Sans GB` | macOS Chinese (冬青) |
+| 9 | `HarmonyOS Sans SC` | Huawei devices |
+| 10 | `Microsoft YaHei` | Windows Chinese (雅黑) |
+| 11 | `Source Han Sans SC` | Adobe open source |
+| 12 | `Noto Sans SC` | Google Android |
+| 13 | `sans-serif` | Final fallback |
 
 ### Tailwind Mapping
 
-- `font-sans`
+- `font-sans` → Complete system font stack above
 
 ### Rule
 
-All product UI should use `font-sans` unless there is an explicit exception.
+- Always use `font-sans`
+- Never import external fonts
+- Never override font-family in components
 
 ---
 

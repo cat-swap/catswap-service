@@ -7,24 +7,12 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TradingPair, CandleData } from '../../types';
-import { OrderBookPanel } from './OrderBookPanel';
-import { formatPrice, formatVolume } from '../../shared/lib/formatters';
-
-interface OrderBookEntry {
-  price: number;
-  amount: number;
-  total: number;
-}
 
 type TimeFrame = '1m' | '5m' | '15m' | '1H' | '4H' | '1D' | '1W';
 
 interface ChartPanelProps {
   selectedPair: TradingPair;
   candleData: CandleData[];
-  orderBook: {
-    asks: OrderBookEntry[];
-    bids: OrderBookEntry[];
-  };
   timeFrame: TimeFrame;
   onTimeFrameChange: (tf: TimeFrame) => void;
 }
@@ -34,16 +22,26 @@ const TIME_FRAMES: TimeFrame[] = ['1m', '5m', '15m', '1H', '4H', '1D', '1W'];
 export const ChartPanel: React.FC<ChartPanelProps> = ({
   selectedPair,
   candleData,
-  orderBook,
   timeFrame,
   onTimeFrameChange,
 }) => {
   const priceChange = selectedPair.change24h >= 0;
 
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const formatVolume = (volume: number) => {
+    if (volume >= 1e9) return (volume / 1e9).toFixed(2) + 'B';
+    if (volume >= 1e6) return (volume / 1e6).toFixed(2) + 'M';
+    if (volume >= 1e3) return (volume / 1e3).toFixed(2) + 'K';
+    return volume.toFixed(2);
+  };
+
   const tooltipStyles = {
     backgroundColor: 'var(--bg-secondary)',
     border: '1px solid var(--border-primary)',
-    borderRadius: '8px',
+    borderRadius: '6px',
     padding: '8px 12px',
   };
 
@@ -53,68 +51,57 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full min-w-0">
-      {/* Chart Header */}
-      <div className="flex items-center gap-4 px-4 py-3 border-b border-border flex-wrap">
-        <div className="flex items-baseline gap-2">
-          <h2 className="text-lg font-semibold text-foreground">
-            {selectedPair.symbol}
-          </h2>
-          <span className="text-xs text-foreground-tertiary">
-            {selectedPair.name} Perpetual
+    <div className="flex flex-col h-full min-w-0 bg-[var(--bg-secondary)]">
+      {/* Stats Row */}
+      <div className="hidden sm:flex items-center gap-6 px-4 py-2 border-b border-[var(--border-primary)] overflow-x-auto">
+        <div className="flex flex-col">
+          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">Mark Price</span>
+          <span className={`text-sm font-medium ${priceChange ? 'text-[var(--color-buy)]' : 'text-[var(--color-sell)]'}`}>
+            {formatPrice(selectedPair.price)}
           </span>
         </div>
-        <div className="flex items-baseline gap-2">
-          <span
-            className={`text-2xl font-bold ${
-              priceChange ? 'text-success' : 'text-danger'
-            }`}
-          >
-            ${formatPrice(selectedPair.price)}
-          </span>
-          <span
-            className={`text-xs px-1.5 py-0.5 rounded ${
-              priceChange
-                ? 'text-success bg-success-light'
-                : 'text-danger bg-danger-light'
-            }`}
-          >
-            {priceChange ? '+' : ''}
-            {selectedPair.change24h.toFixed(2)}%
+        <div className="flex flex-col">
+          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">Index Price</span>
+          <span className="text-sm font-medium text-[var(--text-primary)]">
+            {formatPrice(selectedPair.price * 0.9998)}
           </span>
         </div>
-        <div className="hidden lg:flex items-center gap-4 ml-auto">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-foreground-tertiary">24h High</span>
-            <span className="text-sm text-foreground">
-              ${formatPrice(selectedPair.high24h)}
-            </span>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-foreground-tertiary">24h Low</span>
-            <span className="text-sm text-foreground">
-              ${formatPrice(selectedPair.low24h)}
-            </span>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-foreground-tertiary">24h Vol</span>
-            <span className="text-sm text-foreground">
-              {formatVolume(selectedPair.volume24h)}
-            </span>
-          </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">24h High</span>
+          <span className="text-sm font-medium text-[var(--text-primary)]">
+            {formatPrice(selectedPair.high24h)}
+          </span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">24h Low</span>
+          <span className="text-sm font-medium text-[var(--text-primary)]">
+            {formatPrice(selectedPair.low24h)}
+          </span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">24h Volume</span>
+          <span className="text-sm font-medium text-[var(--text-primary)]">
+            {formatVolume(selectedPair.volume24h)}
+          </span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">Funding Rate</span>
+          <span className="text-sm font-medium text-[var(--color-buy)]">
+            +0.01%
+          </span>
         </div>
       </div>
 
       {/* Time Frame Selector */}
-      <div className="flex gap-1 px-4 py-2 border-b border-border">
+      <div className="flex gap-1 px-4 py-2 border-b border-[var(--border-primary)] overflow-x-auto">
         {TIME_FRAMES.map((tf) => (
           <button
             key={tf}
             onClick={() => onTimeFrameChange(tf)}
-            className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+            className={`px-3 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
               timeFrame === tf
-                ? 'bg-background-tertiary text-foreground'
-                : 'text-foreground-tertiary hover:text-foreground hover:bg-background-tertiary'
+                ? 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
+                : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]'
             }`}
           >
             {tf}
@@ -123,9 +110,9 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
       </div>
 
       {/* Chart */}
-      <div className="h-[280px] p-4 border-b border-border">
+      <div className="flex-1 min-h-0 p-4">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={candleData.slice(-50)}>
+          <LineChart data={candleData.slice(-100)}>
             <XAxis
               dataKey="time"
               axisLine={false}
@@ -145,29 +132,27 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
               tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }}
               tickFormatter={(value) => `$${formatPrice(value)}`}
               width={70}
+              orientation="right"
             />
             <Tooltip
               contentStyle={tooltipStyles}
               labelStyle={labelStyle}
-              formatter={(value) => [`$${formatPrice(Number(value))}`, 'Price']}
+              formatter={(value: number) => [`$${formatPrice(value)}`, 'Price']}
+              labelFormatter={(label) => new Date(label).toLocaleString()}
             />
             <Line
               type="monotone"
               dataKey="close"
-              stroke={
-                priceChange ? 'var(--color-buy)' : 'var(--color-sell)'
-              }
+              stroke={priceChange ? 'var(--color-buy)' : 'var(--color-sell)'}
               strokeWidth={1.5}
               dot={false}
+              activeDot={{ r: 4, fill: priceChange ? 'var(--color-buy)' : 'var(--color-sell)' }}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
-
-      {/* Order Book */}
-      <div className="flex-1 min-h-0">
-        <OrderBookPanel selectedPair={selectedPair} orderBook={orderBook} />
-      </div>
     </div>
   );
 };
+
+export default ChartPanel;

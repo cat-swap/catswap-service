@@ -1,6 +1,6 @@
 import { useState, Suspense, lazy } from 'react';
-import { Header, WalletModal } from './components';
-import { SwapPage } from './components';
+import { Header } from './components/Header';
+import { SwapPage } from './components/SwapPage';
 import { useWallet } from './hooks/useWallet';
 import { useTheme } from './hooks/useTheme';
 import './App.css';
@@ -9,60 +9,31 @@ import './App.css';
 const TradePage = lazy(() => import('./components/TradePage'));
 const PoolsPage = lazy(() => import('./components/PoolsPage'));
 
-type Page = 'swap' | 'perps' | 'pools';
+type Page = 'spot' | 'perps' | 'pools';
 
 // Simple loading fallback
 const PageLoader = () => (
   <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-success" />
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--okx-primary)]" />
   </div>
 );
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('swap');
-  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState<Page>('spot');
   const { theme, toggleTheme } = useTheme();
+  const { wallet, isConnecting, connect, disconnect } = useWallet();
 
-  const {
-    wallet,
-    isConnecting,
-    connectPhantom,
-    connectMetaMask,
-    connectCatena,
-    disconnect,
-  } = useWallet();
-
-  const handleConnectPhantom = async () => {
+  const handleConnect = async () => {
     try {
-      await connectPhantom();
-      setIsWalletModalOpen(false);
+      await connect();
     } catch (error) {
-      console.error('Failed to connect Phantom:', error);
-    }
-  };
-
-  const handleConnectMetaMask = async () => {
-    try {
-      await connectMetaMask();
-      setIsWalletModalOpen(false);
-    } catch (error) {
-      console.error('Failed to connect MetaMask:', error);
-    }
-  };
-
-  const handleConnectCatena = async () => {
-    try {
-      await connectCatena();
-      setIsWalletModalOpen(false);
-    } catch (error) {
-      console.error('Failed to connect Catena:', error);
+      console.error('Failed to connect wallet:', error);
     }
   };
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'swap':
+      case 'spot':
         return <SwapPage />;
       case 'perps':
         return (
@@ -82,27 +53,30 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <Header
         wallet={wallet}
-        onConnectWallet={() => setIsWalletModalOpen(true)}
+        onConnectWallet={handleConnect}
         onDisconnect={disconnect}
         currentPage={currentPage}
-        onPageChange={(page) => setCurrentPage(page as Page)}
+        onPageChange={setCurrentPage}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
 
-      <main className="flex-1 overflow-hidden">{renderPage()}</main>
+      <main className="pt-14 sm:pt-16 md:pt-16 min-h-screen">
+        {renderPage()}
+      </main>
 
-      <WalletModal
-        isOpen={isWalletModalOpen}
-        onClose={() => setIsWalletModalOpen(false)}
-        onConnectPhantom={handleConnectPhantom}
-        onConnectMetaMask={handleConnectMetaMask}
-        onConnectCatena={handleConnectCatena}
-        isConnecting={isConnecting}
-      />
+      {/* Simple Loading Overlay */}
+      {isConnecting && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--okx-primary)]" />
+            <span className="text-sm text-[var(--text-secondary)]">Connecting to Catena...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
