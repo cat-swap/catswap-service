@@ -1,0 +1,217 @@
+@import url('https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* OKX Design System CSS Variables */
+:root {
+  /* Buy/Long - Always Green */
+  --color-buy: #25A750;
+  --color-buy-hover: #1E8A42;
+  --color-buy-light: rgba(37, 167, 80, 0.1);
+  
+  /* Sell/Short - Always Red */
+  --color-sell: #CA3F64;
+  --color-sell-hover: #B03556;
+  --color-sell-light: rgba(202, 63, 100, 0.1);
+}
+
+/* Dark Theme (default) */
+[data-theme="dark"],
+:root {
+  --bg-primary: #000000;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1a1a1a;
+  --bg-hover: #2a2a2a;
+  --bg-input: #2a2a2a;
+  
+  --border-primary: #2a2a2a;
+  --border-secondary: #1a1a1a;
+  --border-hover: #3a3a3a;
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: #808080;
+  --text-tertiary: #666666;
+  --text-muted: #4a4a4a;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F5F5F5;
+  --bg-tertiary: #F0F0F0;
+  --bg-hover: #E8E8E8;
+  --bg-input: #F5F5F5;
+  
+  --border-primary: #E5E5E5;
+  --border-secondary: #F0F0F0;
+  --border-hover: #D4D4D4;
+  
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-muted: #CCCCCC;
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  html {
+    @apply antialiased;
+  }
+  
+  body {
+    @apply m-0 font-sans;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+@layer components {
+  /* OKX Button System */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-okx font-medium text-sm transition-all duration-200 cursor-pointer border-none outline-none;
+  }
+  
+  .btn:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+  
+  /* Primary Button - Theme aware (Black/White) */
+  .btn-primary {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+  }
+  
+  .btn-primary:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  
+  /* Secondary Button - Theme aware */
+  .btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+  }
+  
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--text-primary);
+  }
+  
+  /* Ghost Button */
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--text-secondary);
+  }
+  
+  .btn-ghost:hover:not(:disabled) {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+  }
+  
+  /* Buy/Long Button - Always Green */
+  .btn-buy {
+    background-color: var(--color-buy);
+    color: white;
+  }
+  
+  .btn-buy:hover:not(:disabled) {
+    background-color: var(--color-buy-hover);
+  }
+  
+  /* Sell/Short Button - Always Red */
+  .btn-sell {
+    background-color: var(--color-sell);
+    color: white;
+  }
+  
+  .btn-sell:hover:not(:disabled) {
+    background-color: var(--color-sell-hover);
+  }
+  
+  /* Input Styles */
+  .input-okx {
+    @apply w-full px-3 py-2.5 rounded-okx text-sm outline-none transition-all duration-200;
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid transparent;
+  }
+  
+  .input-okx::placeholder {
+    color: var(--text-tertiary);
+  }
+  
+  .input-okx:focus {
+    border-color: var(--border-hover);
+  }
+  
+  /* Card Styles */
+  .card-okx {
+    @apply rounded-okx-lg;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+  }
+  
+  /* Text Utilities */
+  .text-primary-okx {
+    color: var(--text-primary);
+  }
+  
+  .text-secondary-okx {
+    color: var(--text-secondary);
+  }
+  
+  .text-tertiary-okx {
+    color: var(--text-tertiary);
+  }
+  
+  /* Background Utilities */
+  .bg-primary-okx {
+    background-color: var(--bg-primary);
+  }
+  
+  .bg-secondary-okx {
+    background-color: var(--bg-secondary);
+  }
+  
+  .bg-tertiary-okx {
+    background-color: var(--bg-tertiary);
+  }
+  
+  /* Border Utilities */
+  .border-primary-okx {
+    border-color: var(--border-primary);
+  }
+  
+  .border-secondary-okx {
+    border-color: var(--border-secondary);
+  }
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-buy-light);
+}

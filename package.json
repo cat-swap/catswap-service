@@ -1,0 +1,36 @@
+{
+  "name": "catswap-service",
+  "version": "1.0.0",
+  "description": "CatSwap Service Monorepo - A DEX on Bitcoin L2",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:frontend": "npm run build --workspace=packages/frontend",
+    "clean": "npm run clean --workspaces --if-present",
+    "clean:frontend": "npm run clean --workspace=packages/frontend --if-present",
+    "start:dev": "npm run start --workspace=packages/frontend",
+    "install:all": "npm install",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:frontend": "npm run lint --workspace=packages/frontend",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "typecheck:frontend": "npm run typecheck --workspace=packages/frontend"
+  },
+  "keywords": [
+    "monorepo",
+    "catswap",
+    "dex",
+    "bitcoin",
+    "catena",
+    "frontend"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.9.3"
+  }
+}
