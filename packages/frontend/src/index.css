@@ -62,9 +62,7 @@
   }
 
   body {
-    @apply m-0;
-    font-family: 'HarmonyOS Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-      'Helvetica Neue', sans-serif;
+    @apply m-0 font-sans;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.2s ease, color 0.2s ease;
