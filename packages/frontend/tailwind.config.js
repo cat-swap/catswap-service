@@ -33,7 +33,8 @@ export default {
           hover: 'var(--color-sell-hover)',
           light: 'var(--color-sell-light)',
         },
-        // Legacy OKX color system (for backward compatibility)
+        // OKX reference colors (use success/danger instead)
+        // Deprecated: will be removed in future versions
         okx: {
           buy: '#25A750',
           'buy-hover': '#1E8A42',

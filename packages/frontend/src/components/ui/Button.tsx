@@ -8,19 +8,19 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary: High emphasis, main actions
+        // Primary: High emphasis, main actions (theme-aware: black/white)
         primary:
-          'bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90 focus-visible:ring-[var(--text-primary)]',
+          'bg-foreground text-background hover:opacity-90 focus-visible:ring-foreground',
         // Secondary: Medium emphasis
         secondary:
-          'bg-transparent border border-[var(--border-primary)] text-[var(--text-primary)] hover:border-[var(--text-primary)] focus-visible:ring-[var(--border-primary)]',
+          'bg-transparent border border-border text-foreground hover:border-foreground focus-visible:ring-border',
         // Ghost: Low emphasis
         ghost:
-          'bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] focus-visible:ring-[var(--bg-hover)]',
+          'bg-transparent text-foreground-secondary hover:text-foreground hover:bg-background-tertiary focus-visible:ring-background-tertiary',
         // Buy: Always green
-        buy: 'bg-[var(--color-buy)] text-white hover:bg-[var(--color-buy-hover)] focus-visible:ring-[var(--color-buy)]',
+        buy: 'bg-success text-white hover:bg-success-hover focus-visible:ring-success',
         // Sell: Always red
-        sell: 'bg-[var(--color-sell)] text-white hover:bg-[var(--color-sell-hover)] focus-visible:ring-[var(--color-sell)]',
+        sell: 'bg-danger text-white hover:bg-danger-hover focus-visible:ring-danger',
       },
       size: {
         sm: 'h-8 px-3 text-xs',

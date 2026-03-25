@@ -1,16 +1,5 @@
 /* App-specific styles */
 
-/* Animation for loading spinner */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
 /* Smooth transitions for interactive elements only */
 .transition-theme {
   transition-property: background-color, border-color, color;
