@@ -175,167 +175,238 @@ Typical location:
 <div className="bg-background-secondary text-foreground border border-border" />
 ```
 
-### Acceptable when needed
+### Acceptable Only When Necessary
 
 ```tsx
-<div className="bg-[var(--bg-secondary)]" />
+<Line stroke="var(--color-buy)" />
 ```
 
-### Bad
+### Avoid
 
 ```tsx
-<div className="bg-[#141414]" />
-<div style={{ backgroundColor: '#141414' }} />
+<div className="bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-primary)]" />
 ```
+
+when equivalent semantic token classes already exist.
+
+### Why
+
+Semantic classes:
+
+- improve readability
+- reduce drift
+- make global refactors easier
+- keep implementation consistent across the codebase
 
 ---
 
-## Component Patterns
+## UI Component Layer
 
-### UI Primitives
+### Required Shared Primitives
 
-Located in `src/components/ui/*`:
+All common UI patterns should be implemented in `src/components/ui/*`.
+
+Expected primitives include:
 
 - Button
-- Card
 - Input
+- Card
 - Modal
 - Tabs
 
-These are the **only** components that should define low-level visual styling.
+Additional primitives may include:
 
-All other components should compose these primitives.
+- Badge
+- DropdownMenu
+- Tooltip
+- Select
+- Table
+- Skeleton
 
-### Layout Components
+### Rules
 
-Do not create one-off layout divs with complex styling.
+- feature pages should use shared primitives by default
+- visual variants belong in the primitive, not duplicated in pages
+- if a new repeated pattern appears twice or more, consider promoting it into `ui/`
 
-Prefer:
+### Good
 
-- standardized layout patterns
-- shared layout components if needed
-- consistent spacing scales
-
-### Do
-
-- use `Card` for containers
-- use `Button` with variants
-- use `Input` for form fields
-
-### Don't
-
-- rewrite card styles in every page
-- use raw `<button>` with custom classes
-- use raw `<input>` without the Input component
-
----
-
-## Spacing & Density
-
-### Rule
-
-Use Tailwind's spacing scale consistently.
-
-Do not introduce arbitrary spacing values unless necessary.
-
-### Preferred
-
-- `p-4`, `m-6`, `gap-3`
-- `px-6 py-4`
-
-### Acceptable
-
-- `h-[calc(100vh-64px)]` for specific layout needs
+- add a `buy` variant to Button
+- add a `compact` variant to Card
 
 ### Bad
 
-- `style={{ padding: 12 }}`
-- `className="p-[13px]"`
+- manually rebuild the same button styles in 4 pages
+- manually rebuild card shell styles in every feature module
 
 ---
 
-## File Structure
+## Page and Feature Responsibilities
 
+### Pages/Features Should Do
+
+- compose layouts
+- connect data/state
+- wire interactions
+- assemble feature-specific sections
+
+### Pages/Features Should Not Do
+
+- redefine typography scale
+- redefine base spacing rules
+- redefine button/input/card styling
+- hardcode repeated colors or radii
+- introduce new token naming systems
+
+### Allowed Exceptions
+
+Direct CSS variables are acceptable in these cases:
+
+#### 1. Third-Party Library Configuration
+
+Examples:
+
+- recharts
+- canvas/chart config
+- inline SVG styles
+- dynamic runtime styles
+
+Example:
+
+```tsx
+<Line stroke="var(--color-buy)" />
 ```
-src/
-├── components/
-│   ├── ui/              # UI primitives (only styling definitions)
-│   │   ├── Button.tsx
-│   │   ├── Card.tsx
-│   │   ├── Input.tsx
-│   │   ├── Modal.tsx
-│   │   └── Tabs.tsx
-│   ├── layout/          # Layout components
-│   ├── features/        # Feature-specific components
-│   └── ...
-├── lib/
-│   └── utils.ts         # cn() and other utilities
-├── styles/
-│   ├── index.css        # CSS variables, font-face, reset
-│   └── ...
-├── tailwind.config.js   # Token mappings
-└── ...
-```
+
+#### 2. Global Browser Styling
+
+Examples:
+
+- scrollbar
+- selection
+- focus ring defaults
+- base body/html rules
+
+#### 3. Truly Dynamic Runtime Values
+
+When Tailwind static class generation is not appropriate.
+
+These should remain exceptions, not the default style authoring pattern.
 
 ---
 
-## Naming Conventions
+## Spacing, Radius, Density
 
-### CSS Variables
+### Rule
 
-- `--background`: base background
-- `--background-secondary`: elevated surfaces
-- `--background-tertiary`: inputs, hover states
-- `--foreground`: primary text
-- `--foreground-secondary`: secondary text
-- `--foreground-tertiary`: hints, placeholders
-- `--border`: default borders
-- `--border-hover`: interactive borders
-- `--success`: buy, positive
-- `--success-hover`: hover state
-- `--danger`: sell, negative
-- `--danger-hover`: hover state
+Spacing, border radius, font size, and transition timing should come from Tailwind theme tokens, not arbitrary one-off values.
 
-### Tailwind Tokens
+### Prefer
 
-Mirror CSS variable names:
+- `rounded-lg`
+- `rounded-xl`
+- `text-sm`
+- `text-base`
+- `gap-2`
+- `gap-4`
+- `p-4`
+- `duration-200`
 
-- `background.DEFAULT`
-- `background.secondary`
-- `background.tertiary`
-- `foreground.DEFAULT`
-- `foreground.secondary`
-- `foreground.tertiary`
-- `border.DEFAULT`
-- `border.hover`
-- `success.DEFAULT`
-- `danger.DEFAULT`
+### Avoid
+
+repeated arbitrary values unless genuinely necessary:
+
+- `rounded-[11px]`
+- `p-[13px]`
+- `text-[15px]`
+
+Use arbitrary values only when there is a strong design reason and no token should exist.
 
 ---
 
-## Migration Path
+## Accessibility Requirements
 
-If you find non-compliant code:
+Because OKX-style UI tends to be dense and interaction-heavy, accessibility must be enforced at the design-system level.
 
-1. Check if a UI primitive already exists
-2. If yes, replace with the primitive
-3. If no, consider adding to `src/components/ui/`
-4. Update Tailwind config if new tokens are needed
-5. Refactor to remove hardcoded values
+### Required
+
+- visible keyboard focus
+- correct semantic roles
+- `aria-*` where appropriate
+- accessible modal behavior
+- accessible dropdown behavior
+- accessible tabs behavior
+- contrast-safe text/surface combinations
+
+### Rule
+
+Accessibility must be built into shared components, not repeatedly patched in pages.
 
 ---
 
-## Enforcement
+## Migration Policy
 
-These rules are enforced through:
+### For Existing Legacy Code
 
-- code review
-- TypeScript strict mode
-- visual regression testing (planned)
-- periodic design audits
+Legacy styles may exist temporarily, but must be treated as transitional.
 
-When in doubt, prefer the pattern that:
+### Migration Priorities
 
-1. uses fewer hardcoded values
-2. relies on shared tokens
-3. matches OKX visual language
+- replace duplicated old classes with semantic Tailwind classes
+- replace repeated shells with shared UI primitives
+- remove deprecated legacy utilities after migration is complete
+
+### Deprecated Patterns
+
+Examples of patterns we should phase out:
+
+- `*-okx` utility naming
+- duplicated `.btn-*` systems outside shared components
+- page-local formatting helpers duplicated across files
+- repeated `bg-[var(--...)]` `text-[var(--...)]` bundles
+
+---
+
+## PR Review Checklist
+
+Before merging, reviewers should check:
+
+- Does this add a new visual pattern that should be a shared component?
+- Does this duplicate an existing token or variant?
+- Does this use semantic Tailwind classes where possible?
+- Does this bypass the design system without a good reason?
+- Does this introduce hardcoded colors, fonts, or spacing?
+- Does it preserve OKX-aligned visual consistency?
+- Does it keep theme behavior centralized?
+- Does it maintain keyboard and screen-reader accessibility?
+
+---
+
+## Decision Rules
+
+When choosing between options, follow this order:
+
+1. Match OKX visual intent
+2. Keep one implementation path
+3. Prefer semantic tokens over raw values
+4. Prefer shared primitives over page-local styling
+5. Prefer maintainability over short-term convenience
+
+---
+
+## Short Version
+
+- Follow OKX visually
+- Implement through one design system
+- Keep fonts/colors/tokens centralized
+- Use Tailwind semantic tokens
+- Build shared UI primitives
+- Avoid dual-track styling systems
+- Optimize for long-term consistency
+
+---
+
+## Project Standard
+
+We do not want a codebase that merely "looks like OKX today".
+
+We want a **design system** that can continue to look like OKX correctly as the product grows.
