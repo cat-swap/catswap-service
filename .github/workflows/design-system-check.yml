@@ -1,0 +1,121 @@
+name: Design System Compliance
+
+on:
+  pull_request:
+    paths:
+      - 'packages/frontend/**'
+
+jobs:
+  design-system-check:
+    name: Check Design System Compliance
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: packages/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ============================================
+      # LINT CHECKS
+      # ============================================
+      
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Run Stylelint
+        run: npm run lint:css
+        continue-on-error: false
+
+      # ============================================
+      # DESIGN SYSTEM SPECIFIC CHECKS
+      # ============================================
+      
+      - name: Check for hardcoded colors
+        run: |
+          echo "🔍 Checking for hardcoded hex colors in JSX..."
+          
+          # Search for hardcoded colors in className (excluding node_modules)
+          HARDOCODED_COLORS=$(grep -r "className.*\[#" src --include="*.tsx" --include="*.jsx" | grep -E "(bg-|text-|border-).*\[#[0-9a-fA-F]{3,6}\]" || true)
+          
+          if [ -n "$HARDOCODED_COLORS" ]; then
+            echo "❌ Found hardcoded colors (forbidden by DESIGN_SYSTEM.md):"
+            echo "$HARDOCODED_COLORS"
+            echo ""
+            echo "Use design system tokens instead:"
+            echo "  - bg-success, bg-danger, bg-background"
+            echo "  - text-foreground, text-success, text-danger"
+            echo "  - border-border, border-success"
+            exit 1
+          else
+            echo "✅ No hardcoded colors found"
+          fi
+
+      - name: Check for forbidden font imports
+        run: |
+          echo "🔍 Checking for external font imports..."
+          
+          # Check for @import with fonts (excluding index.css which has documentation)
+          FONT_IMPORTS=$(grep -r "@import.*font" src --include="*.css" --include="*.scss" | grep -v "index.css" || true)
+          
+          if [ -n "$FONT_IMPORTS" ]; then
+            echo "❌ Found external font imports (forbidden by DESIGN_SYSTEM.md):"
+            echo "$FONT_IMPORTS"
+            echo ""
+            echo "Use system font stack instead (already configured in tailwind.config.js)"
+            exit 1
+          else
+            echo "✅ No unauthorized font imports"
+          fi
+
+      - name: Check for direct CSS variable usage
+        run: |
+          echo "🔍 Checking for discouraged var(--...) usage..."
+          
+          # Count occurrences of bg-[var(--...)] (should be rare)
+          VAR_USAGE=$(grep -r "var(--" src --include="*.tsx" | grep -E "className.*\[var\(--" | wc -l)
+          
+          if [ "$VAR_USAGE" -gt 5 ]; then
+            echo "⚠️  Found $VAR_USAGE uses of bg-[var(--...)] or similar"
+            echo "Consider migrating to semantic classes: bg-background, text-foreground, etc."
+            echo ""
+            grep -r "var(--" src --include="*.tsx" | grep -E "className.*\[var\(--" | head -10
+          else
+            echo "✅ Acceptable level of CSS variable usage ($VAR_USAGE)"
+          fi
+
+      # ============================================
+      # BUILD CHECK
+      # ============================================
+      
+      - name: Build check
+        run: npm run build
+        continue-on-error: false
+
+      # ============================================
+      # SUMMARY
+      # ============================================
+      
+      - name: Summary
+        if: success()
+        run: |
+          echo "✅ All design system checks passed!"
+          echo ""
+          echo "Compliance verified:"
+          echo "  ✓ No hardcoded colors"
+          echo "  ✓ No external font imports"
+          echo "  ✓ ESLint passed"
+          echo "  ✓ Stylelint passed"
+          echo "  ✓ Build successful"

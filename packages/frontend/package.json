@@ -9,7 +9,10 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
-    "typecheck": "tsc --noEmit"
+    "lint:css": "stylelint 'src/**/*.{css,scss}' --allow-empty-input",
+    "design-system:check": "./scripts/design-system-check.sh",
+    "typecheck": "tsc --noEmit",
+    "precommit": "npm run design-system:check && npm run lint && npm run typecheck"
   },
   "dependencies": {
     "@solana/web3.js": "^1.98.4",
@@ -26,9 +29,17 @@
     "@types/node": "^20.11.30",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "@vitejs/plugin-react-swc": "^3.8.1",
     "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
     "postcss": "^8.5.3",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0",
+    "stylelint-order": "^6.0.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.4.5",
     "vite": "^6.2.3"
