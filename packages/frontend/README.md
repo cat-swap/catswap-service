@@ -1,46 +1,123 @@
-# Getting Started with Create React App
+# CatSwap Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern DEX frontend built with React, Vite, and Tailwind CSS.
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+- **Build Tool**: [Vite](https://vitejs.dev/) with SWC for fast HMR
+- **Framework**: React 18.3 + TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Custom component library with `class-variance-authority`
+- **Icons**: Lucide React
+- **Charts**: Recharts
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Prerequisites
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Node.js 18+
+- npm 9+
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+```
 
-### `npm run build`
+### Development
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm run dev
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Runs the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The page will reload when you make edits. HMR (Hot Module Replacement) provides instant updates.
 
-### `npm run eject`
+### Type Checking
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+npm run typecheck
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Build
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+npm run build
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Builds the app for production to the `dist` folder. The build is minified and optimized.
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+Serves the production build locally for testing.
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── ui/              # Reusable UI components
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   ├── Input.tsx
+│   │   ├── Modal.tsx
+│   │   └── Tabs.tsx
+│   ├── Header.tsx
+│   ├── WalletModal.tsx
+│   ├── SwapPage.tsx
+│   ├── TradePage.tsx
+│   └── PoolsPage.tsx
+├── lib/
+│   └── utils.ts         # Utility functions (cn, etc.)
+├── shared/
+│   └── lib/
+│       └── formatters.ts # Formatting utilities
+├── hooks/
+│   ├── useWallet.ts
+│   └── useTheme.ts
+├── types/
+│   └── index.ts
+├── App.tsx
+└── index.tsx
+```
+
+## UI Components
+
+Components are built with accessibility in mind:
+
+- **Button**: Multiple variants (primary, secondary, ghost, buy, sell) with loading state
+- **Card**: Flexible card layout with header, content, footer sections
+- **Input**: Form input with label, error, and helper text support
+- **Modal**: Accessible dialog with focus trap, ESC to close, focus restoration
+- **Tabs**: Keyboard navigable tabs with proper ARIA attributes
+
+## Styling
+
+Uses Tailwind CSS with custom CSS variables for theming:
+
+```css
+--bg-primary: #000000;      /* Main background */
+--bg-secondary: #141414;    /* Card/panel background */
+--text-primary: #ffffff;    /* Main text */
+--color-buy: #25a750;       /* Buy/green */
+--color-sell: #ca3f64;      /* Sell/red */
+```
+
+## Development Mode
+
+Enable mock wallet data by creating `.env`:
+
+```env
+VITE_USE_MOCK_WALLET=true
+```
 
 ## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [Vite Documentation](https://vitejs.dev/guide/)
+- [React Documentation](https://react.dev/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -10,6 +10,9 @@ import {
   AreaChart,
 } from 'recharts';
 import { TradingPair, CandleData } from '../types';
+import { Card } from './ui/Card';
+import { Tabs, TabsList, TabsTrigger } from './ui/Tabs';
+import { formatPrice, formatVolume } from '../shared/lib/formatters';
 
 interface PriceChartProps {
   pair: TradingPair | null;
@@ -18,7 +21,12 @@ interface PriceChartProps {
 
 type TimeFrame = '1H' | '4H' | '1D' | '1W' | '1M';
 
-export const PriceChart: React.FC<PriceChartProps> = ({ pair, candleData }) => {
+const TIME_FRAMES: TimeFrame[] = ['1H', '4H', '1D', '1W', '1M'];
+
+export const PriceChart: React.FC<PriceChartProps> = ({
+  pair,
+  candleData,
+}) => {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('1D');
   const [chartType, setChartType] = useState<'line' | 'area'>('area');
 
@@ -33,29 +41,19 @@ export const PriceChart: React.FC<PriceChartProps> = ({ pair, candleData }) => {
     }));
   }, [candleData]);
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000) {
-      return price.toLocaleString('en-US', { minimumFractionDigits: 2 });
-    }
-    return price.toFixed(2);
-  };
-
-  const timeFrames: TimeFrame[] = ['1H', '4H', '1D', '1W', '1M'];
-
   if (!pair) {
     return (
-      <div className="rounded-okx-lg border border-primary-okx bg-secondary-okx p-6">
-        <div className="h-[350px] flex items-center justify-center text-tertiary-okx">
+      <Card className="p-6">
+        <div className="h-[350px] flex items-center justify-center text-[var(--text-tertiary)]">
           Select a trading pair to view the chart
         </div>
-      </div>
+      </Card>
     );
   }
 
   const priceChange = pair.change24h >= 0;
   const chartColor = priceChange ? 'var(--color-buy)' : 'var(--color-sell)';
 
-  // Tooltip styles based on theme
   const tooltipStyles = {
     backgroundColor: 'var(--bg-secondary)',
     border: '1px solid var(--border-primary)',
@@ -73,70 +71,77 @@ export const PriceChart: React.FC<PriceChartProps> = ({ pair, candleData }) => {
   };
 
   return (
-    <div className="rounded-okx-lg border border-primary-okx bg-secondary-okx p-6">
+    <Card className="p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl font-semibold text-primary-okx">{pair.symbol}</span>
-            <span className="text-sm text-tertiary-okx">{pair.name}</span>
+            <span className="text-xl font-semibold text-[var(--text-primary)]">
+              {pair.symbol}
+            </span>
+            <span className="text-sm text-[var(--text-tertiary)]">
+              {pair.name}
+            </span>
           </div>
           <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-primary-okx">${formatPrice(pair.price)}</span>
-            <span className={`text-sm font-medium px-2 py-0.5 rounded ${
-              priceChange ? 'text-okx-buy bg-okx-buy-light' : 'text-okx-sell bg-okx-sell-light'
-            }`}>
-              {priceChange ? '+' : ''}{pair.change24h.toFixed(2)}%
+            <span className="text-3xl font-bold text-[var(--text-primary)]">
+              ${formatPrice(pair.price)}
+            </span>
+            <span
+              className={`text-sm font-medium px-2 py-0.5 rounded ${
+                priceChange
+                  ? 'text-[var(--color-buy)] bg-[var(--color-buy-light)]'
+                  : 'text-[var(--color-sell)] bg-[var(--color-sell-light)]'
+              }`}
+            >
+              {priceChange ? '+' : ''}
+              {pair.change24h.toFixed(2)}%
             </span>
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {/* Time Frames */}
-          <div className="flex rounded-okx bg-tertiary-okx p-1">
-            {timeFrames.map((tf) => (
-              <button
-                key={tf}
-                onClick={() => setTimeFrame(tf)}
-                className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
-                  timeFrame === tf
-                    ? 'bg-tertiary-okx text-primary-okx'
-                    : 'text-tertiary-okx hover:text-primary-okx'
-                }`}
-              >
-                {tf}
-              </button>
-            ))}
-          </div>
+          <Tabs value={timeFrame} onValueChange={(v) => setTimeFrame(v as TimeFrame)}>
+            <TabsList>
+              {TIME_FRAMES.map((tf) => (
+                <TabsTrigger key={tf} value={tf}>
+                  {tf}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
 
           {/* Chart Types */}
-          <div className="flex rounded-okx bg-tertiary-okx p-1">
-            {(['area', 'line'] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setChartType(type)}
-                className={`px-3 py-1.5 text-xs font-medium rounded capitalize transition-colors ${
-                  chartType === type
-                    ? 'bg-tertiary-okx text-primary-okx'
-                    : 'text-tertiary-okx hover:text-primary-okx'
-                }`}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
+          <Tabs
+            value={chartType}
+            onValueChange={(v) => setChartType(v as 'line' | 'area')}
+          >
+            <TabsList>
+              <TabsTrigger value="area">Area</TabsTrigger>
+              <TabsTrigger value="line">Line</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </div>
 
       {/* Chart */}
-      <div className="h-[350px] mb-4">
+      <div className="h-[300px] sm:h-[350px] mb-4">
         <ResponsiveContainer width="100%" height="100%">
           {chartType === 'area' ? (
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
+                  <stop
+                    offset="5%"
+                    stopColor={chartColor}
+                    stopOpacity={0.3}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor={chartColor}
+                    stopOpacity={0}
+                  />
                 </linearGradient>
               </defs>
               <XAxis
@@ -158,7 +163,10 @@ export const PriceChart: React.FC<PriceChartProps> = ({ pair, candleData }) => {
                 contentStyle={tooltipStyles}
                 labelStyle={labelStyle}
                 itemStyle={itemStyle}
-                formatter={(value) => [`$${formatPrice(Number(value))}`, 'Price']}
+                formatter={(value) => [
+                  `$${formatPrice(Number(value))}`,
+                  'Price',
+                ]}
               />
               <Area
                 type="monotone"
@@ -189,7 +197,10 @@ export const PriceChart: React.FC<PriceChartProps> = ({ pair, candleData }) => {
                 contentStyle={tooltipStyles}
                 labelStyle={labelStyle}
                 itemStyle={itemStyle}
-                formatter={(value) => [`$${formatPrice(Number(value))}`, 'Price']}
+                formatter={(value) => [
+                  `$${formatPrice(Number(value))}`,
+                  'Price',
+                ]}
               />
               <Line
                 type="monotone"
@@ -204,20 +215,32 @@ export const PriceChart: React.FC<PriceChartProps> = ({ pair, candleData }) => {
       </div>
 
       {/* Stats */}
-      <div className="flex gap-8 pt-4 border-t border-primary-okx">
+      <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[var(--border-primary)]">
         <div>
-          <span className="block text-xs text-tertiary-okx mb-1">24h High</span>
-          <span className="text-sm font-medium text-primary-okx">${formatPrice(pair.high24h)}</span>
+          <span className="block text-xs text-[var(--text-tertiary)] mb-1">
+            24h High
+          </span>
+          <span className="text-sm font-medium text-[var(--text-primary)]">
+            ${formatPrice(pair.high24h)}
+          </span>
         </div>
         <div>
-          <span className="block text-xs text-tertiary-okx mb-1">24h Low</span>
-          <span className="text-sm font-medium text-primary-okx">${formatPrice(pair.low24h)}</span>
+          <span className="block text-xs text-[var(--text-tertiary)] mb-1">
+            24h Low
+          </span>
+          <span className="text-sm font-medium text-[var(--text-primary)]">
+            ${formatPrice(pair.low24h)}
+          </span>
         </div>
         <div>
-          <span className="block text-xs text-tertiary-okx mb-1">24h Volume</span>
-          <span className="text-sm font-medium text-primary-okx">${(pair.volume24h / 1e9).toFixed(2)}B</span>
+          <span className="block text-xs text-[var(--text-tertiary)] mb-1">
+            24h Volume
+          </span>
+          <span className="text-sm font-medium text-[var(--text-primary)]">
+            {formatVolume(pair.volume24h)}
+          </span>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };

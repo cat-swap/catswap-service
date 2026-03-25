@@ -1,5 +1,8 @@
-import React from 'react';
 import { TradingPair } from '../types';
+import { Card } from './ui/Card';
+import { Button } from './ui/Button';
+import { Tabs, TabsList, TabsTrigger } from './ui/Tabs';
+import { formatPrice, formatVolume } from '../shared/lib/formatters';
 
 interface MarketOverviewProps {
   pairs: TradingPair[];
@@ -7,53 +10,50 @@ interface MarketOverviewProps {
   onSelectPair: (pair: TradingPair) => void;
 }
 
+const TABS = ['Hot', 'Gainers', 'Losers', 'New'] as const;
+
+const getPairColor = (symbol: string): string => {
+  const colors: Record<string, string> = {
+    BTC: '#f7931a',
+    ETH: '#627eea',
+    SOL: '#14f195',
+    BNB: '#f3ba2f',
+    XRP: '#23292f',
+    DOGE: '#c3a634',
+    ADA: '#0033ad',
+    AVAX: '#e84142',
+  };
+  const key = symbol.split('/')[0];
+  return colors[key] || '#6b7280';
+};
+
 export const MarketOverview: React.FC<MarketOverviewProps> = ({
   pairs,
   selectedPair,
   onSelectPair,
 }) => {
-  const formatPrice = (price: number) => {
-    if (price >= 1000) {
-      return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-    return price.toFixed(4);
-  };
-
-  const formatVolume = (volume: number) => {
-    if (volume >= 1e9) {
-      return `$${(volume / 1e9).toFixed(2)}B`;
-    }
-    if (volume >= 1e6) {
-      return `$${(volume / 1e6).toFixed(2)}M`;
-    }
-    return `$${(volume / 1e3).toFixed(2)}K`;
-  };
-
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-primary-okx">Markets</h2>
-        <div className="flex gap-1">
-          {['Hot', 'Gainers', 'Losers', 'New'].map((tab, index) => (
-            <button
-              key={tab}
-              className={`px-4 py-2 text-sm font-medium rounded-okx transition-colors ${
-                index === 0
-                  ? 'text-primary-okx bg-tertiary-okx'
-                  : 'text-secondary-okx hover:text-primary-okx hover:bg-tertiary-okx'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <h2 className="text-xl font-semibold text-[var(--text-primary)]">
+          Markets
+        </h2>
+        <Tabs value="Hot" onValueChange={() => {}}>
+          <TabsList>
+            {TABS.map((tab) => (
+              <TabsTrigger key={tab} value={tab}>
+                {tab}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
       {/* Table */}
-      <div className="rounded-okx-lg border border-primary-okx bg-secondary-okx overflow-hidden">
+      <Card className="overflow-hidden">
         {/* Table Header */}
-        <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-3 border-b border-primary-okx text-xs font-medium text-tertiary-okx uppercase">
+        <div className="hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
           <span>Name</span>
           <span className="text-right">Last Price</span>
           <span className="text-right">24h Change</span>
@@ -63,82 +63,157 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
           <span></span>
         </div>
 
+        {/* Mobile Header */}
+        <div className="grid grid-cols-[2fr_1fr_1fr_auto] sm:hidden px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
+          <span>Name</span>
+          <span className="text-right">Price</span>
+          <span className="text-right">Change</span>
+          <span></span>
+        </div>
+
         {/* Table Body */}
         <div className="max-h-[500px] overflow-y-auto">
           {pairs.map((pair) => (
             <div
               key={pair.id}
               onClick={() => onSelectPair(pair)}
-              className={`grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-4 border-b border-primary-okx cursor-pointer transition-colors items-center ${
-                selectedPair?.id === pair.id 
-                  ? 'bg-tertiary-okx border-l-2 border-l-okx-buy' 
-                  : 'hover:bg-tertiary-okx'
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectPair(pair);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className={`hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-4 border-b border-[var(--border-primary)] cursor-pointer transition-colors items-center ${
+                selectedPair?.id === pair.id
+                  ? 'bg-[var(--bg-tertiary)] border-l-2 border-l-[var(--color-buy)]'
+                  : 'hover:bg-[var(--bg-tertiary)]'
               }`}
             >
               {/* Name */}
               <div className="flex items-center gap-3">
-                <div 
+                <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm"
                   style={{ background: getPairColor(pair.symbol) }}
                 >
                   {pair.symbol.charAt(0)}
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-primary-okx">{pair.symbol}</div>
-                  <div className="text-xs text-tertiary-okx">{pair.name}</div>
+                  <div className="text-sm font-medium text-[var(--text-primary)]">
+                    {pair.symbol}
+                  </div>
+                  <div className="text-xs text-[var(--text-tertiary)]">
+                    {pair.name}
+                  </div>
                 </div>
               </div>
 
               {/* Price */}
-              <span className="text-sm font-medium text-primary-okx text-right">
+              <span className="text-sm font-medium text-[var(--text-primary)] text-right">
                 ${formatPrice(pair.price)}
               </span>
 
               {/* Change */}
-              <span className={`text-sm font-medium text-right ${pair.change24h >= 0 ? 'text-okx-buy' : 'text-okx-sell'}`}>
-                {pair.change24h >= 0 ? '+' : ''}{pair.change24h.toFixed(2)}%
+              <span
+                className={`text-sm font-medium text-right ${
+                  pair.change24h >= 0
+                    ? 'text-[var(--color-buy)]'
+                    : 'text-[var(--color-sell)]'
+                }`}
+              >
+                {pair.change24h >= 0 ? '+' : ''}
+                {pair.change24h.toFixed(2)}%
               </span>
 
               {/* Volume */}
-              <span className="text-sm text-tertiary-okx text-right">
+              <span className="text-sm text-[var(--text-tertiary)] text-right">
                 {formatVolume(pair.volume24h)}
               </span>
 
               {/* High */}
-              <span className="text-sm text-tertiary-okx text-right">
+              <span className="text-sm text-[var(--text-tertiary)] text-right">
                 ${formatPrice(pair.high24h)}
               </span>
 
               {/* Low */}
-              <span className="text-sm text-tertiary-okx text-right">
+              <span className="text-sm text-[var(--text-tertiary)] text-right">
                 ${formatPrice(pair.low24h)}
               </span>
 
               {/* Action */}
               <div className="text-right">
-                <button className="px-4 py-1.5 text-xs font-medium rounded border border-okx-buy text-okx-buy hover:bg-okx-buy hover:text-white transition-colors">
+                <Button variant="secondary" size="sm">
                   Trade
-                </button>
+                </Button>
+              </div>
+            </div>
+          ))}
+
+          {/* Mobile Row */}
+          {pairs.map((pair) => (
+            <div
+              key={`mobile-${pair.id}`}
+              onClick={() => onSelectPair(pair)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectPair(pair);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className={`grid grid-cols-[2fr_1fr_1fr_auto] sm:hidden px-4 py-4 border-b border-[var(--border-primary)] cursor-pointer transition-colors items-center ${
+                selectedPair?.id === pair.id
+                  ? 'bg-[var(--bg-tertiary)] border-l-2 border-l-[var(--color-buy)]'
+                  : 'hover:bg-[var(--bg-tertiary)]'
+              }`}
+            >
+              {/* Name */}
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs"
+                  style={{ background: getPairColor(pair.symbol) }}
+                >
+                  {pair.symbol.charAt(0)}
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-[var(--text-primary)]">
+                    {pair.symbol}
+                  </div>
+                  <div className="text-xs text-[var(--text-tertiary)]">
+                    {pair.name}
+                  </div>
+                </div>
+              </div>
+
+              {/* Price */}
+              <span className="text-sm font-medium text-[var(--text-primary)] text-right">
+                ${formatPrice(pair.price)}
+              </span>
+
+              {/* Change */}
+              <span
+                className={`text-sm font-medium text-right ${
+                  pair.change24h >= 0
+                    ? 'text-[var(--color-buy)]'
+                    : 'text-[var(--color-sell)]'
+                }`}
+              >
+                {pair.change24h >= 0 ? '+' : ''}
+                {pair.change24h.toFixed(2)}%
+              </span>
+
+              {/* Action */}
+              <div className="text-right pl-2">
+                <Button variant="secondary" size="sm" className="px-2 py-1 text-xs">
+                  Trade
+                </Button>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
-};
-
-const getPairColor = (symbol: string): string => {
-  const colors: Record<string, string> = {
-    'BTC': '#f7931a',
-    'ETH': '#627eea',
-    'SOL': '#14f195',
-    'BNB': '#f3ba2f',
-    'XRP': '#23292f',
-    'DOGE': '#c3a634',
-    'ADA': '#0033ad',
-    'AVAX': '#e84142',
-  };
-  const key = symbol.split('/')[0];
-  return colors[key] || '#6b7280';
 };

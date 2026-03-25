@@ -1,11 +1,22 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { Header, WalletModal } from './components';
-import { SwapPage, TradePage, PoolsPage } from './components';
+import { SwapPage } from './components';
 import { useWallet } from './hooks/useWallet';
 import { useTheme } from './hooks/useTheme';
 import './App.css';
 
+// Lazy load heavy pages that use recharts
+const TradePage = lazy(() => import('./components/TradePage'));
+const PoolsPage = lazy(() => import('./components/PoolsPage'));
+
 type Page = 'swap' | 'perps' | 'pools';
+
+// Simple loading fallback
+const PageLoader = () => (
+  <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-buy)]" />
+  </div>
+);
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('swap');
@@ -54,9 +65,17 @@ function App() {
       case 'swap':
         return <SwapPage />;
       case 'perps':
-        return <TradePage />;
+        return (
+          <Suspense fallback={<PageLoader />}>
+            <TradePage />
+          </Suspense>
+        );
       case 'pools':
-        return <PoolsPage />;
+        return (
+          <Suspense fallback={<PageLoader />}>
+            <PoolsPage />
+          </Suspense>
+        );
       default:
         return <SwapPage />;
     }

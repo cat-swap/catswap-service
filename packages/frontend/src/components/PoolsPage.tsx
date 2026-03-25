@@ -150,3 +150,5 @@ export const PoolsPage: React.FC = () => {
     </div>
   );
 };
+
+export default PoolsPage;

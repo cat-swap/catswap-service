@@ -31,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [showDropdown, setShowDropdown] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const disconnectButtonRef = React.useRef<HTMLButtonElement>(null);
 
   // Close dropdown when clicking outside
   React.useEffect(() => {
@@ -50,11 +51,61 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   // Handle keyboard navigation for dropdown
-  const handleDropdownKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setShowDropdown(false);
-      buttonRef.current?.focus();
-    }
+  React.useEffect(() => {
+    if (!showDropdown) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Escape closes dropdown
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setShowDropdown(false);
+        buttonRef.current?.focus();
+        return;
+      }
+
+      // Tab navigation - close on tab out
+      if (e.key === 'Tab') {
+        const focusableElements = dropdownRef.current?.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        
+        if (!focusableElements || focusableElements.length === 0) {
+          setShowDropdown(false);
+          return;
+        }
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          // Shift+Tab from first element - close and return to trigger
+          e.preventDefault();
+          setShowDropdown(false);
+          buttonRef.current?.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          // Tab from last element - close dropdown
+          setShowDropdown(false);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    
+    // Focus first menu item when opened
+    setTimeout(() => {
+      disconnectButtonRef.current?.focus();
+    }, 10);
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showDropdown]);
+
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleDisconnect = () => {
+    onDisconnect();
+    setShowDropdown(false);
   };
 
   return (
@@ -113,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="relative">
                 <button
                   ref={buttonRef}
-                  onClick={() => setShowDropdown(!showDropdown)}
+                  onClick={handleDropdownToggle}
                   aria-expanded={showDropdown}
                   aria-haspopup="menu"
                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] transition-colors border border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
@@ -134,15 +185,12 @@ export const Header: React.FC<HeaderProps> = ({
                   <div
                     ref={dropdownRef}
                     role="menu"
-                    className="absolute top-full right-0 mt-2 py-2 px-1 min-w-[150px] rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] shadow-lg"
-                    onKeyDown={handleDropdownKeyDown}
+                    className="absolute top-full right-0 mt-2 py-2 px-1 min-w-[150px] rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] shadow-lg z-50"
                   >
                     <button
+                      ref={disconnectButtonRef}
                       role="menuitem"
-                      onClick={() => {
-                        onDisconnect();
-                        setShowDropdown(false);
-                      }}
+                      onClick={handleDisconnect}
                       className="w-full text-left px-3 py-2 text-sm text-[var(--color-sell)] hover:bg-[var(--bg-tertiary)] rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                     >
                       Disconnect

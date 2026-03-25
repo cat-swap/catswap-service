@@ -22,6 +22,29 @@ const sizeClasses = {
 };
 
 /**
+ * Get focusable elements within a container
+ */
+const getFocusableElements = (container: HTMLElement): HTMLElement[] => {
+  const focusableSelectors = [
+    'button:not([disabled])',
+    'a[href]',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+    '[contenteditable]',
+  ].join(', ');
+
+  return Array.from(container.querySelectorAll(focusableSelectors)).filter(
+    (el): el is HTMLElement => {
+      // Filter out hidden elements
+      const style = window.getComputedStyle(el);
+      return style.display !== 'none' && style.visibility !== 'hidden';
+    }
+  );
+};
+
+/**
  * Accessible Modal component with focus trap and keyboard support
  */
 const Modal = ({
@@ -42,16 +65,30 @@ const Modal = ({
   React.useEffect(() => {
     if (isOpen) {
       previousActiveElement.current = document.activeElement;
-      // Focus the modal container after a short delay for animation
-      setTimeout(() => {
-        modalRef.current?.focus();
-      }, 50);
+
+      // Focus the first focusable element or modal container
+      const focusModal = () => {
+        if (!modalRef.current) return;
+
+        const focusableElements = getFocusableElements(modalRef.current);
+
+        if (focusableElements.length > 0) {
+          // Focus first focusable element
+          focusableElements[0].focus();
+        } else {
+          // Fallback: focus the modal container itself
+          modalRef.current.focus();
+        }
+      };
+
+      // Small delay to allow animation to start
+      const timeoutId = setTimeout(focusModal, 50);
 
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
+          e.preventDefault();
           handleClose();
-        }
-        if (e.key === 'Tab') {
+        } else if (e.key === 'Tab') {
           handleTabKey(e);
         }
       };
@@ -60,6 +97,7 @@ const Modal = ({
       document.body.style.overflow = 'hidden';
 
       return () => {
+        clearTimeout(timeoutId);
         document.removeEventListener('keydown', handleKeyDown);
         document.body.style.overflow = '';
       };
@@ -72,7 +110,10 @@ const Modal = ({
       setIsClosing(false);
       onClose();
       // Restore focus
-      if (previousActiveElement.current instanceof HTMLElement) {
+      if (
+        previousActiveElement.current instanceof HTMLElement &&
+        document.body.contains(previousActiveElement.current)
+      ) {
         previousActiveElement.current.focus();
       }
     }, 200);
@@ -81,21 +122,36 @@ const Modal = ({
   const handleTabKey = (e: KeyboardEvent) => {
     if (!modalRef.current) return;
 
-    const focusableElements = modalRef.current.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+    const focusableElements = getFocusableElements(modalRef.current);
+
+    // If no focusable elements, just focus the modal container
+    if (focusableElements.length === 0) {
+      e.preventDefault();
+      modalRef.current.focus();
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    // If focus is not within the modal, reset to first element
+    if (!modalRef.current.contains(document.activeElement)) {
+      e.preventDefault();
+      firstElement.focus();
+      return;
+    }
 
     if (e.shiftKey) {
+      // Shift + Tab
       if (document.activeElement === firstElement) {
-        lastElement.focus();
         e.preventDefault();
+        lastElement.focus();
       }
     } else {
+      // Tab
       if (document.activeElement === lastElement) {
-        firstElement.focus();
         e.preventDefault();
+        firstElement.focus();
       }
     }
   };
