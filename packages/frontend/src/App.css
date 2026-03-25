@@ -1,11 +1,5 @@
 /* App-specific styles */
 
-/* Ensure smooth theme transitions */
-* {
-  transition-property: background-color, border-color, color;
-  transition-duration: 0ms; /* Only apply where explicitly set */
-}
-
 /* Animation for loading spinner */
 @keyframes spin {
   to {
@@ -15,4 +9,11 @@
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions for interactive elements only */
+.transition-theme {
+  transition-property: background-color, border-color, color;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
 }

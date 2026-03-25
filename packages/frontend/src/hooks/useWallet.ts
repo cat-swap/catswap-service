@@ -8,6 +8,9 @@ import {
   disconnectCatena,
 } from '../utils/catenaWallet';
 
+// Flag to enable mock mode for development
+const USE_MOCK_WALLET = import.meta.env.VITE_USE_MOCK_WALLET === 'true';
+
 declare global {
   interface Window {
     solana?: {
@@ -27,7 +30,26 @@ declare global {
 
 export type WalletType = 'phantom' | 'metamask' | 'catena';
 
-export const useWallet = () => {
+interface UseWalletOptions {
+  initialMockBalance?: number;
+}
+
+/**
+ * Get mock balance based on wallet type (for development only)
+ * In production, this should be replaced with actual API calls
+ */
+function getMockBalance(walletType: WalletType): number {
+  const mockBalances: Record<WalletType, number> = {
+    phantom: 10.5,
+    metamask: 5.25,
+    catena: 0.5,
+  };
+  return mockBalances[walletType] ?? 0;
+}
+
+export const useWallet = (options: UseWalletOptions = {}) => {
+  const { initialMockBalance } = options;
+  
   const [wallet, setWallet] = useState<WalletInfo>({
     address: '',
     balance: 0,
@@ -39,7 +61,9 @@ export const useWallet = () => {
   // Check if Catena wallet is already connected on mount
   useEffect(() => {
     const checkCatenaConnection = async () => {
+      // Add small delay to allow wallet extension to inject
       await new Promise(resolve => setTimeout(resolve, 300));
+      
       if (!isCatenaInstalled()) {
         return;
       }
@@ -52,7 +76,9 @@ export const useWallet = () => {
             const address = accounts[0];
             setWallet({
               address: `${address.slice(0, 6)}...${address.slice(-4)}`,
-              balance: Math.random() * 0.5, // Mock BTC balance
+              balance: USE_MOCK_WALLET 
+                ? (initialMockBalance ?? getMockBalance('catena'))
+                : 0, // In production, fetch from API
               connected: true,
             });
             setWalletType('catena');
@@ -64,7 +90,7 @@ export const useWallet = () => {
     };
 
     checkCatenaConnection();
-  }, []);
+  }, [initialMockBalance]);
 
   // Listen for Catena account changes
   useEffect(() => {
@@ -74,7 +100,9 @@ export const useWallet = () => {
           const address = accounts[0];
           setWallet({
             address: `${address.slice(0, 6)}...${address.slice(-4)}`,
-            balance: Math.random() * 0.5,
+            balance: USE_MOCK_WALLET 
+              ? (initialMockBalance ?? getMockBalance('catena'))
+              : wallet.balance, // Keep existing balance in production
             connected: true,
           });
         } else {
@@ -92,7 +120,7 @@ export const useWallet = () => {
         window.opcat?.removeListener('accountsChanged', handleAccountChange);
       };
     }
-  }, [walletType]);
+  }, [walletType, wallet.balance, initialMockBalance]);
 
   const connectPhantom = useCallback(async () => {
     try {
@@ -102,7 +130,9 @@ export const useWallet = () => {
         const address = response.publicKey.toString();
         setWallet({
           address: `${address.slice(0, 4)}...${address.slice(-4)}`,
-          balance: Math.random() * 10,
+          balance: USE_MOCK_WALLET 
+            ? (initialMockBalance ?? getMockBalance('phantom'))
+            : 0,
           connected: true,
         });
         setWalletType('phantom');
@@ -116,7 +146,7 @@ export const useWallet = () => {
     } finally {
       setIsConnecting(false);
     }
-  }, []);
+  }, [initialMockBalance]);
 
   const connectMetaMask = useCallback(async () => {
     try {
@@ -128,7 +158,9 @@ export const useWallet = () => {
         const address = accounts[0];
         setWallet({
           address: `${address.slice(0, 4)}...${address.slice(-4)}`,
-          balance: Math.random() * 5,
+          balance: USE_MOCK_WALLET 
+            ? (initialMockBalance ?? getMockBalance('metamask'))
+            : 0,
           connected: true,
         });
         setWalletType('metamask');
@@ -142,7 +174,7 @@ export const useWallet = () => {
     } finally {
       setIsConnecting(false);
     }
-  }, []);
+  }, [initialMockBalance]);
 
   const connectCatena = useCallback(async () => {
     try {
@@ -157,7 +189,9 @@ export const useWallet = () => {
         const address = accounts[0];
         setWallet({
           address: `${address.slice(0, 6)}...${address.slice(-4)}`,
-          balance: Math.random() * 0.5,
+          balance: USE_MOCK_WALLET 
+            ? (initialMockBalance ?? getMockBalance('catena'))
+            : 0,
           connected: true,
         });
         setWalletType('catena');
@@ -170,7 +204,7 @@ export const useWallet = () => {
     } finally {
       setIsConnecting(false);
     }
-  }, []);
+  }, [initialMockBalance]);
 
   const disconnect = useCallback(async () => {
     if (walletType === 'catena') {

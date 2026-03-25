@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  as?: keyof JSX.IntrinsicElements;
-}
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, as: Component = 'div', ...props }, ref) => {
+  ({ className, ...props }, ref) => {
     return (
-      <Component
+      <div
         ref={ref}
         className={cn(
           'rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)]',

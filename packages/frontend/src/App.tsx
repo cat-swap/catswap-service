@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Header, WalletModal, TradePage, SwapPage, PoolsPage } from './components';
+import { useState } from 'react';
+import { Header, WalletModal } from './components';
+import { SwapPage, TradePage, PoolsPage } from './components';
 import { useWallet } from './hooks/useWallet';
 import { useTheme } from './hooks/useTheme';
 import './App.css';
@@ -9,7 +10,7 @@ type Page = 'swap' | 'perps' | 'pools';
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('swap');
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  
+
   const { theme, toggleTheme } = useTheme();
 
   const {
@@ -62,7 +63,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-primary-okx transition-colors duration-200">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <Header
         wallet={wallet}
         onConnectWallet={() => setIsWalletModalOpen(true)}
@@ -73,9 +74,7 @@ function App() {
         onToggleTheme={toggleTheme}
       />
 
-      <main className="flex-1 overflow-hidden">
-        {renderPage()}
-      </main>
+      <main className="flex-1 overflow-hidden">{renderPage()}</main>
 
       <WalletModal
         isOpen={isWalletModalOpen}

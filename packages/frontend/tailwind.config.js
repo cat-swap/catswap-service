@@ -1,84 +1,82 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: ['class', '[data-theme="dark"]'],
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        // OKX Color System
+        // Semantic colors mapped to CSS variables
+        background: {
+          DEFAULT: 'var(--bg-primary)',
+          secondary: 'var(--bg-secondary)',
+          tertiary: 'var(--bg-tertiary)',
+        },
+        foreground: {
+          DEFAULT: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          tertiary: 'var(--text-tertiary)',
+          muted: 'var(--text-muted)',
+        },
+        border: {
+          DEFAULT: 'var(--border-primary)',
+          secondary: 'var(--border-secondary)',
+          hover: 'var(--border-hover)',
+        },
+        // Buy/Sell colors - semantic naming
+        success: {
+          DEFAULT: 'var(--color-buy)',
+          hover: 'var(--color-buy-hover)',
+          light: 'var(--color-buy-light)',
+        },
+        danger: {
+          DEFAULT: 'var(--color-sell)',
+          hover: 'var(--color-sell-hover)',
+          light: 'var(--color-sell-light)',
+        },
+        // Legacy OKX color system (for backward compatibility)
         okx: {
-          // Buy/Long - Always Green
           buy: '#25A750',
           'buy-hover': '#1E8A42',
           'buy-light': 'rgba(37, 167, 80, 0.1)',
-          
-          // Sell/Short - Always Red
           sell: '#CA3F64',
           'sell-hover': '#B03556',
           'sell-light': 'rgba(202, 63, 100, 0.1)',
-          
-          // Dark Theme
-          dark: {
-            bg: '#000000',
-            'bg-secondary': '#141414',
-            'bg-tertiary': '#1a1a1a',
-            'bg-hover': '#2a2a2a',
-            'bg-input': '#2a2a2a',
-            border: '#2a2a2a',
-            'border-hover': '#3a3a3a',
-          },
-          
-          // Light Theme
-          light: {
-            bg: '#FFFFFF',
-            'bg-secondary': '#F5F5F5',
-            'bg-tertiary': '#F0F0F0',
-            'bg-hover': '#E8E8E8',
-            'bg-input': '#F5F5F5',
-            border: '#E5E5E5',
-            'border-hover': '#D4D4D4',
-          },
-          
-          // Text Colors
-          'text-primary-dark': '#FFFFFF',
-          'text-secondary-dark': '#808080',
-          'text-tertiary-dark': '#666666',
-          
-          'text-primary-light': '#000000',
-          'text-secondary-light': '#666666',
-          'text-tertiary-light': '#999999',
-          
-          // Accent
-          accent: '#00D4AA',
-        }
+        },
       },
       fontFamily: {
-        sans: ['HarmonyOS Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'Noto Sans',
+          'sans-serif',
+        ],
       },
       borderRadius: {
-        'okx': '8px',
-        'okx-lg': '12px',
-        'okx-xl': '16px',
+        lg: '0.75rem',
+        xl: '1rem',
+        '2xl': '1.5rem',
       },
       fontSize: {
-        'xs': ['11px', '14px'],
-        'sm': ['12px', '16px'],
-        'base': ['14px', '20px'],
-        'lg': ['16px', '24px'],
-        'xl': ['18px', '26px'],
-        '2xl': ['20px', '28px'],
-        '3xl': ['24px', '32px'],
+        xs: ['0.6875rem', '0.875rem'], // 11px / 14px
+        sm: ['0.75rem', '1rem'], // 12px / 16px
+        base: ['0.875rem', '1.25rem'], // 14px / 20px
+        lg: ['1rem', '1.5rem'], // 16px / 24px
+        xl: ['1.125rem', '1.625rem'], // 18px / 26px
+        '2xl': ['1.25rem', '1.75rem'], // 20px / 28px
+        '3xl': ['1.5rem', '2rem'], // 24px / 32px
       },
       spacing: {
-        '18': '4.5rem',
-        '22': '5.5rem',
+        18: '4.5rem',
+        22: '5.5rem',
       },
       transitionDuration: {
-        '200': '200ms',
+        200: '200ms',
       },
     },
   },
   plugins: [],
-}
+};
