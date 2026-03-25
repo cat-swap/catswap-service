@@ -36,7 +36,7 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
     <div className="p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-xl font-semibold text-[var(--text-primary)]">
+        <h2 className="text-xl font-semibold text-foreground">
           Markets
         </h2>
         <Tabs value="Hot" onValueChange={() => {}}>
@@ -53,7 +53,7 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
       {/* Table */}
       <Card className="overflow-hidden">
         {/* Table Header */}
-        <div className="hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
+        <div className="hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-3 border-b border-border text-xs font-medium text-foreground-tertiary uppercase">
           <span>Name</span>
           <span className="text-right">Last Price</span>
           <span className="text-right">24h Change</span>
@@ -64,7 +64,7 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
         </div>
 
         {/* Mobile Header */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_auto] sm:hidden px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
+        <div className="grid grid-cols-[2fr_1fr_1fr_auto] sm:hidden px-4 py-3 border-b border-border text-xs font-medium text-foreground-tertiary uppercase">
           <span>Name</span>
           <span className="text-right">Price</span>
           <span className="text-right">Change</span>
@@ -85,10 +85,10 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
               }}
               role="button"
               tabIndex={0}
-              className={`hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-4 border-b border-[var(--border-primary)] cursor-pointer transition-colors items-center ${
+              className={`hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_0.8fr] px-4 py-4 border-b border-border cursor-pointer transition-colors items-center ${
                 selectedPair?.id === pair.id
-                  ? 'bg-[var(--bg-tertiary)] border-l-2 border-l-[var(--color-buy)]'
-                  : 'hover:bg-[var(--bg-tertiary)]'
+                  ? 'bg-background-tertiary border-l-2 border-l-success'
+                  : 'hover:bg-background-tertiary'
               }`}
             >
               {/* Name */}
@@ -100,17 +100,17 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
                   {pair.symbol.charAt(0)}
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-[var(--text-primary)]">
+                  <div className="text-sm font-medium text-foreground">
                     {pair.symbol}
                   </div>
-                  <div className="text-xs text-[var(--text-tertiary)]">
+                  <div className="text-xs text-foreground-tertiary">
                     {pair.name}
                   </div>
                 </div>
               </div>
 
               {/* Price */}
-              <span className="text-sm font-medium text-[var(--text-primary)] text-right">
+              <span className="text-sm font-medium text-foreground text-right">
                 ${formatPrice(pair.price)}
               </span>
 
@@ -118,8 +118,8 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
               <span
                 className={`text-sm font-medium text-right ${
                   pair.change24h >= 0
-                    ? 'text-[var(--color-buy)]'
-                    : 'text-[var(--color-sell)]'
+                    ? 'text-success'
+                    : 'text-danger'
                 }`}
               >
                 {pair.change24h >= 0 ? '+' : ''}
@@ -127,17 +127,17 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
               </span>
 
               {/* Volume */}
-              <span className="text-sm text-[var(--text-tertiary)] text-right">
+              <span className="text-sm text-foreground-tertiary text-right">
                 {formatVolume(pair.volume24h)}
               </span>
 
               {/* High */}
-              <span className="text-sm text-[var(--text-tertiary)] text-right">
+              <span className="text-sm text-foreground-tertiary text-right">
                 ${formatPrice(pair.high24h)}
               </span>
 
               {/* Low */}
-              <span className="text-sm text-[var(--text-tertiary)] text-right">
+              <span className="text-sm text-foreground-tertiary text-right">
                 ${formatPrice(pair.low24h)}
               </span>
 
@@ -163,10 +163,10 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
               }}
               role="button"
               tabIndex={0}
-              className={`grid grid-cols-[2fr_1fr_1fr_auto] sm:hidden px-4 py-4 border-b border-[var(--border-primary)] cursor-pointer transition-colors items-center ${
+              className={`grid grid-cols-[2fr_1fr_1fr_auto] sm:hidden px-4 py-4 border-b border-border cursor-pointer transition-colors items-center ${
                 selectedPair?.id === pair.id
-                  ? 'bg-[var(--bg-tertiary)] border-l-2 border-l-[var(--color-buy)]'
-                  : 'hover:bg-[var(--bg-tertiary)]'
+                  ? 'bg-background-tertiary border-l-2 border-l-success'
+                  : 'hover:bg-background-tertiary'
               }`}
             >
               {/* Name */}
@@ -178,17 +178,17 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
                   {pair.symbol.charAt(0)}
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-[var(--text-primary)]">
+                  <div className="text-sm font-medium text-foreground">
                     {pair.symbol}
                   </div>
-                  <div className="text-xs text-[var(--text-tertiary)]">
+                  <div className="text-xs text-foreground-tertiary">
                     {pair.name}
                   </div>
                 </div>
               </div>
 
               {/* Price */}
-              <span className="text-sm font-medium text-[var(--text-primary)] text-right">
+              <span className="text-sm font-medium text-foreground text-right">
                 ${formatPrice(pair.price)}
               </span>
 
@@ -196,8 +196,8 @@ export const MarketOverview: React.FC<MarketOverviewProps> = ({
               <span
                 className={`text-sm font-medium text-right ${
                   pair.change24h >= 0
-                    ? 'text-[var(--color-buy)]'
-                    : 'text-[var(--color-sell)]'
+                    ? 'text-success'
+                    : 'text-danger'
                 }`}
               >
                 {pair.change24h >= 0 ? '+' : ''}

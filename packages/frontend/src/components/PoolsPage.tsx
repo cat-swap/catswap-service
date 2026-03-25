@@ -31,8 +31,8 @@ interface StatCardProps {
 const StatCard: React.FC<StatCardProps> = ({ label, value }) => (
   <Card>
     <CardContent className="p-4">
-      <p className="text-xs text-[var(--text-tertiary)] mb-1">{label}</p>
-      <p className="text-xl font-semibold text-[var(--text-primary)]">{value}</p>
+      <p className="text-xs text-foreground-tertiary mb-1">{label}</p>
+      <p className="text-xl font-semibold text-foreground">{value}</p>
     </CardContent>
   </Card>
 );
@@ -43,7 +43,7 @@ interface PoolRowProps {
 
 const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
   <div
-    className="grid grid-cols-5 px-4 sm:px-6 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors cursor-pointer"
+    className="grid grid-cols-5 px-4 sm:px-6 py-4 border-b border-border items-center hover:bg-background-tertiary transition-colors cursor-pointer"
     role="button"
     tabIndex={0}
     onKeyDown={(e) => {
@@ -55,30 +55,30 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
   >
     <div className="flex items-center gap-2">
       <div className="flex -space-x-1">
-        <div className="w-7 h-7 rounded-full bg-[var(--color-buy)] flex items-center justify-center text-white text-xs font-bold">
+        <div className="w-7 h-7 rounded-full bg-success flex items-center justify-center text-white text-xs font-bold">
           {pool.tokenA[0]}
         </div>
-        <div className="w-7 h-7 rounded-full bg-[var(--color-sell)] flex items-center justify-center text-white text-xs font-bold">
+        <div className="w-7 h-7 rounded-full bg-danger flex items-center justify-center text-white text-xs font-bold">
           {pool.tokenB[0]}
         </div>
       </div>
-      <span className="text-sm font-medium text-[var(--text-primary)] ml-1 hidden sm:inline">
+      <span className="text-sm font-medium text-foreground ml-1 hidden sm:inline">
         {pool.tokenA}/{pool.tokenB}
       </span>
-      <span className="text-sm font-medium text-[var(--text-primary)] ml-1 sm:hidden">
+      <span className="text-sm font-medium text-foreground ml-1 sm:hidden">
         {pool.tokenA}/{pool.tokenB}
       </span>
     </div>
-    <span className="text-sm text-[var(--text-primary)] text-right">
+    <span className="text-sm text-foreground text-right">
       {formatCurrency(pool.tvl)}
     </span>
-    <span className="text-sm text-[var(--color-buy)] text-right">
+    <span className="text-sm text-success text-right">
       {pool.apr}%
     </span>
-    <span className="text-sm text-[var(--text-primary)] text-right">
+    <span className="text-sm text-foreground text-right">
       {formatCurrency(pool.volume24h)}
     </span>
-    <span className="text-sm text-[var(--text-tertiary)] text-right">
+    <span className="text-sm text-foreground-tertiary text-right">
       {pool.fee}%
     </span>
   </div>
@@ -93,10 +93,10 @@ export const PoolsPage: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-2xl font-semibold text-[var(--text-primary)] mb-1">
+            <h1 className="text-2xl font-semibold text-foreground mb-1">
               Liquidity Pools
             </h1>
-            <p className="text-sm text-[var(--text-tertiary)]">
+            <p className="text-sm text-foreground-tertiary">
               Provide liquidity and earn fees
             </p>
           </div>
@@ -125,7 +125,7 @@ export const PoolsPage: React.FC = () => {
         {/* Pools Table */}
         <Card className="overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-5 px-4 sm:px-6 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
+          <div className="grid grid-cols-5 px-4 sm:px-6 py-3 border-b border-border text-xs font-medium text-foreground-tertiary uppercase">
             <span>Pool</span>
             <span className="text-right">TVL</span>
             <span className="text-right">APR</span>
@@ -139,7 +139,7 @@ export const PoolsPage: React.FC = () => {
             POOLS.map((pool) => <PoolRow key={pool.id} pool={pool} />)
           ) : (
             <div className="flex flex-col items-center justify-center py-16">
-              <p className="text-[var(--text-tertiary)] text-sm mb-4">
+              <p className="text-foreground-tertiary text-sm mb-4">
                 No positions found
               </p>
               <Button>Add Liquidity</Button>

@@ -55,19 +55,19 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
   return (
     <div className="flex flex-col h-full min-w-0">
       {/* Chart Header */}
-      <div className="flex items-center gap-4 px-4 py-3 border-b border-[var(--border-primary)] flex-wrap">
+      <div className="flex items-center gap-4 px-4 py-3 border-b border-border flex-wrap">
         <div className="flex items-baseline gap-2">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+          <h2 className="text-lg font-semibold text-foreground">
             {selectedPair.symbol}
           </h2>
-          <span className="text-xs text-[var(--text-tertiary)]">
+          <span className="text-xs text-foreground-tertiary">
             {selectedPair.name} Perpetual
           </span>
         </div>
         <div className="flex items-baseline gap-2">
           <span
             className={`text-2xl font-bold ${
-              priceChange ? 'text-[var(--color-buy)]' : 'text-[var(--color-sell)]'
+              priceChange ? 'text-success' : 'text-danger'
             }`}
           >
             ${formatPrice(selectedPair.price)}
@@ -75,8 +75,8 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
           <span
             className={`text-xs px-1.5 py-0.5 rounded ${
               priceChange
-                ? 'text-[var(--color-buy)] bg-[var(--color-buy-light)]'
-                : 'text-[var(--color-sell)] bg-[var(--color-sell-light)]'
+                ? 'text-success bg-success-light'
+                : 'text-danger bg-danger-light'
             }`}
           >
             {priceChange ? '+' : ''}
@@ -85,20 +85,20 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
         </div>
         <div className="hidden lg:flex items-center gap-4 ml-auto">
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-[var(--text-tertiary)]">24h High</span>
-            <span className="text-sm text-[var(--text-primary)]">
+            <span className="text-xs text-foreground-tertiary">24h High</span>
+            <span className="text-sm text-foreground">
               ${formatPrice(selectedPair.high24h)}
             </span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-[var(--text-tertiary)]">24h Low</span>
-            <span className="text-sm text-[var(--text-primary)]">
+            <span className="text-xs text-foreground-tertiary">24h Low</span>
+            <span className="text-sm text-foreground">
               ${formatPrice(selectedPair.low24h)}
             </span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-[var(--text-tertiary)]">24h Vol</span>
-            <span className="text-sm text-[var(--text-primary)]">
+            <span className="text-xs text-foreground-tertiary">24h Vol</span>
+            <span className="text-sm text-foreground">
               {formatVolume(selectedPair.volume24h)}
             </span>
           </div>
@@ -106,15 +106,15 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
       </div>
 
       {/* Time Frame Selector */}
-      <div className="flex gap-1 px-4 py-2 border-b border-[var(--border-primary)]">
+      <div className="flex gap-1 px-4 py-2 border-b border-border">
         {TIME_FRAMES.map((tf) => (
           <button
             key={tf}
             onClick={() => onTimeFrameChange(tf)}
             className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
               timeFrame === tf
-                ? 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
-                : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]'
+                ? 'bg-background-tertiary text-foreground'
+                : 'text-foreground-tertiary hover:text-foreground hover:bg-background-tertiary'
             }`}
           >
             {tf}
@@ -123,7 +123,7 @@ export const ChartPanel: React.FC<ChartPanelProps> = ({
       </div>
 
       {/* Chart */}
-      <div className="h-[280px] p-4 border-b border-[var(--border-primary)]">
+      <div className="h-[280px] p-4 border-b border-border">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={candleData.slice(-50)}>
             <XAxis

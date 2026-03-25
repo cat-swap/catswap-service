@@ -188,7 +188,7 @@ const Modal = ({
         aria-describedby={description ? 'modal-description' : undefined}
         tabIndex={-1}
         className={cn(
-          'relative z-10 w-full bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-primary)] shadow-2xl',
+          'relative z-10 w-full bg-background-secondary rounded-2xl border border-border shadow-2xl',
           'transform transition-all duration-200',
           isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100',
           sizeClasses[size],
@@ -197,19 +197,19 @@ const Modal = ({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-primary)]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             {title && (
               <div className="space-y-1">
                 <h2
                   id="modal-title"
-                  className="text-lg font-semibold text-[var(--text-primary)]"
+                  className="text-lg font-semibold text-foreground"
                 >
                   {title}
                 </h2>
                 {description && (
                   <p
                     id="modal-description"
-                    className="text-sm text-[var(--text-secondary)]"
+                    className="text-sm text-foreground-secondary"
                   >
                     {description}
                   </p>

@@ -109,12 +109,12 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border-primary)] bg-[var(--bg-primary)] transition-colors duration-200">
+    <header className="sticky top-0 z-40 border-b border-border bg-background transition-colors duration-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2 cursor-pointer">
-          <span className="text-2xl text-[var(--color-buy)]">◉</span>
-          <span className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
+          <span className="text-2xl text-success">◉</span>
+          <span className="text-xl font-bold text-foreground tracking-tight">
             CatSwap
           </span>
         </div>
@@ -129,8 +129,8 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => onPageChange?.(item.id)}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                 currentPage === item.id
-                  ? 'text-[var(--text-primary)] bg-[var(--bg-secondary)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
+                  ? 'text-foreground bg-background-secondary'
+                  : 'text-foreground-secondary hover:text-foreground hover:bg-background-tertiary'
               }`}
             >
               {item.label}
@@ -158,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Wallet Section */}
           {wallet.connected ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-[var(--text-primary)] px-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)]">
+              <span className="text-sm font-medium text-foreground px-3 py-1.5 rounded-lg bg-background-tertiary">
                 {wallet.balance.toFixed(4)} BTC
               </span>
               <div className="relative">
@@ -167,16 +167,16 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={handleDropdownToggle}
                   aria-expanded={showDropdown}
                   aria-haspopup="menu"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] transition-colors border border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background-tertiary hover:bg-background-secondary transition-colors border border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                 >
-                  <span className="text-sm text-[var(--text-secondary)]">
+                  <span className="text-sm text-foreground-secondary">
                     {wallet.address}
                   </span>
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-xs text-white font-bold">
                     ₿
                   </div>
                   <ChevronDown
-                    className={`h-4 w-4 text-[var(--text-secondary)] transition-transform duration-200 ${
+                    className={`h-4 w-4 text-foreground-secondary transition-transform duration-200 ${
                       showDropdown ? 'rotate-180' : ''
                     }`}
                   />
@@ -185,13 +185,13 @@ export const Header: React.FC<HeaderProps> = ({
                   <div
                     ref={dropdownRef}
                     role="menu"
-                    className="absolute top-full right-0 mt-2 py-2 px-1 min-w-[150px] rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] shadow-lg z-50"
+                    className="absolute top-full right-0 mt-2 py-2 px-1 min-w-[150px] rounded-lg bg-background-secondary border border-border shadow-lg z-50"
                   >
                     <button
                       ref={disconnectButtonRef}
                       role="menuitem"
                       onClick={handleDisconnect}
-                      className="w-full text-left px-3 py-2 text-sm text-[var(--color-sell)] hover:bg-[var(--bg-tertiary)] rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+                      className="w-full text-left px-3 py-2 text-sm text-error hover:bg-background-tertiary rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                     >
                       Disconnect
                     </button>

@@ -53,7 +53,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       ref={ref}
       role="tablist"
       className={cn(
-        'inline-flex items-center justify-center rounded-lg bg-[var(--bg-tertiary)] p-1',
+        'inline-flex items-center justify-center rounded-lg bg-background-tertiary p-1',
         className
       )}
       {...props}
@@ -80,8 +80,8 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         className={cn(
           'inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
           isSelected
-            ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-sm'
-            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]',
+            ? 'bg-background-secondary text-foreground shadow-sm'
+            : 'text-foreground-secondary hover:text-foreground hover:bg-background-tertiary',
           className
         )}
         {...props}

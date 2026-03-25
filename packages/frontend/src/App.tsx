@@ -14,7 +14,7 @@ type Page = 'swap' | 'perps' | 'pools';
 // Simple loading fallback
 const PageLoader = () => (
   <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-buy)]" />
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-success" />
   </div>
 );
 
@@ -82,7 +82,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)]">
+    <div className="min-h-screen bg-background">
       <Header
         wallet={wallet}
         onConnectWallet={() => setIsWalletModalOpen(true)}

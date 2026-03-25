@@ -32,7 +32,7 @@ const WalletOption: React.FC<WalletOptionProps> = ({
     variant="ghost"
     onClick={onClick}
     disabled={isLoading}
-    className="w-full flex items-center gap-4 p-4 h-auto justify-start border border-[var(--border-primary)] bg-[var(--bg-tertiary)] hover:border-[var(--color-buy)]"
+    className="w-full flex items-center gap-4 p-4 h-auto justify-start border border-border bg-background-tertiary hover:border-success"
   >
     <div
       className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${gradient} shrink-0`}
@@ -40,13 +40,13 @@ const WalletOption: React.FC<WalletOptionProps> = ({
       {icon}
     </div>
     <div className="flex-1 text-left">
-      <span className="block text-base font-medium text-[var(--text-primary)]">
+      <span className="block text-base font-medium text-foreground">
         {name}
       </span>
-      <span className="text-xs text-[var(--text-tertiary)]">{description}</span>
+      <span className="text-xs text-foreground-tertiary">{description}</span>
     </div>
     {isLoading && (
-      <div className="w-5 h-5 border-2 border-[var(--text-tertiary)] border-t-[var(--color-buy)] rounded-full animate-spin" />
+      <div className="w-5 h-5 border-2 border-foreground-tertiary border-t-success rounded-full animate-spin" />
     )}
   </Button>
 );
@@ -281,14 +281,14 @@ export const WalletModal: React.FC<WalletModalProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="mt-6 pt-4 border-t border-[var(--border-primary)]">
-        <p className="text-xs text-[var(--text-tertiary)] text-center">
+      <div className="mt-6 pt-4 border-t border-border">
+        <p className="text-xs text-foreground-tertiary text-center">
           Don&apos;t have a wallet?{' '}
           <a
             href="https://chromewebstore.google.com/detail/catena-wallet/jjjjbhackagenhoidaapdaloghfkckda"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--color-buy)] hover:underline"
+            className="text-success hover:underline"
           >
             Install Catena
           </a>

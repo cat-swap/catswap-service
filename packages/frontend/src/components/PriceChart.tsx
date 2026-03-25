@@ -44,7 +44,7 @@ export const PriceChart: React.FC<PriceChartProps> = ({
   if (!pair) {
     return (
       <Card className="p-6">
-        <div className="h-[350px] flex items-center justify-center text-[var(--text-tertiary)]">
+        <div className="h-[350px] flex items-center justify-center text-foreground-tertiary">
           Select a trading pair to view the chart
         </div>
       </Card>
@@ -76,22 +76,22 @@ export const PriceChart: React.FC<PriceChartProps> = ({
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl font-semibold text-[var(--text-primary)]">
+            <span className="text-xl font-semibold text-foreground">
               {pair.symbol}
             </span>
-            <span className="text-sm text-[var(--text-tertiary)]">
+            <span className="text-sm text-foreground-tertiary">
               {pair.name}
             </span>
           </div>
           <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-[var(--text-primary)]">
+            <span className="text-3xl font-bold text-foreground">
               ${formatPrice(pair.price)}
             </span>
             <span
               className={`text-sm font-medium px-2 py-0.5 rounded ${
                 priceChange
-                  ? 'text-[var(--color-buy)] bg-[var(--color-buy-light)]'
-                  : 'text-[var(--color-sell)] bg-[var(--color-sell-light)]'
+                  ? 'text-success bg-success-light'
+                  : 'text-danger bg-danger-light'
               }`}
             >
               {priceChange ? '+' : ''}
@@ -215,28 +215,28 @@ export const PriceChart: React.FC<PriceChartProps> = ({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[var(--border-primary)]">
+      <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
         <div>
-          <span className="block text-xs text-[var(--text-tertiary)] mb-1">
+          <span className="block text-xs text-foreground-tertiary mb-1">
             24h High
           </span>
-          <span className="text-sm font-medium text-[var(--text-primary)]">
+          <span className="text-sm font-medium text-foreground">
             ${formatPrice(pair.high24h)}
           </span>
         </div>
         <div>
-          <span className="block text-xs text-[var(--text-tertiary)] mb-1">
+          <span className="block text-xs text-foreground-tertiary mb-1">
             24h Low
           </span>
-          <span className="text-sm font-medium text-[var(--text-primary)]">
+          <span className="text-sm font-medium text-foreground">
             ${formatPrice(pair.low24h)}
           </span>
         </div>
         <div>
-          <span className="block text-xs text-[var(--text-tertiary)] mb-1">
+          <span className="block text-xs text-foreground-tertiary mb-1">
             24h Volume
           </span>
-          <span className="text-sm font-medium text-[var(--text-primary)]">
+          <span className="text-sm font-medium text-foreground">
             {formatVolume(pair.volume24h)}
           </span>
         </div>

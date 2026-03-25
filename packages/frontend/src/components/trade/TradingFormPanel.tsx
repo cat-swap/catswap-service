@@ -63,7 +63,7 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
   const percentage = (parseFloat(amount || '0') / maxAmount) * 100;
 
   return (
-    <div className="flex flex-col h-full border-l border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+    <div className="flex flex-col h-full border-l border-border bg-background-secondary">
       {/* Buy/Sell Tabs */}
       <Tabs
         value={orderSide}
@@ -89,8 +89,8 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
               onClick={() => setOrderType(type)}
               className={`px-3 py-1.5 text-xs font-medium rounded transition-colors capitalize ${
                 orderType === type
-                  ? 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
-                  : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)]'
+                  ? 'bg-background-tertiary text-foreground'
+                  : 'text-foreground-tertiary hover:text-foreground'
               }`}
             >
               {type}
@@ -102,7 +102,7 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
         <div className="space-y-3">
           {orderType === 'limit' && (
             <div>
-              <label className="block text-xs text-[var(--text-tertiary)] mb-1">
+              <label className="block text-xs text-foreground-tertiary mb-1">
                 Price
               </label>
               <div className="relative">
@@ -110,9 +110,9 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
                   type="text"
                   value={price || formatPrice(selectedPair.price)}
                   onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-input)] text-[var(--text-primary)] border border-transparent focus:outline-none focus:border-[var(--border-hover)] transition-all pr-14"
+                  className="w-full px-3 py-2 rounded-lg text-sm bg-background-tertiary text-foreground border border-transparent focus:outline-none focus:border-border-hover transition-all pr-14"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-foreground-tertiary">
                   USDT
                 </span>
               </div>
@@ -120,7 +120,7 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
           )}
 
           <div>
-            <label className="block text-xs text-[var(--text-tertiary)] mb-1">
+            <label className="block text-xs text-foreground-tertiary mb-1">
               Amount
             </label>
             <div className="relative">
@@ -129,9 +129,9 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-input)] text-[var(--text-primary)] border border-transparent placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-hover)] transition-all pr-14"
+                className="w-full px-3 py-2 rounded-lg text-sm bg-background-tertiary text-foreground border border-transparent placeholder:text-foreground-tertiary focus:outline-none focus:border-border-hover transition-all pr-14"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-foreground-tertiary">
                 {selectedPair.symbol.split('/')[0]}
               </span>
             </div>
@@ -140,7 +140,7 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
                 <button
                   key={pct}
                   onClick={() => setAmount(((maxAmount * pct) / 100).toFixed(4))}
-                  className="flex-1 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
+                  className="flex-1 py-1 text-xs rounded bg-background-tertiary text-foreground-tertiary hover:text-foreground hover:bg-background-secondary transition-colors"
                 >
                   {pct}%
                 </button>
@@ -149,7 +149,7 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[var(--text-tertiary)] mb-1">
+            <label className="block text-xs text-foreground-tertiary mb-1">
               Total
             </label>
             <div className="relative">
@@ -157,17 +157,17 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
                 type="text"
                 value={total.toFixed(2)}
                 readOnly
-                className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-input)] text-[var(--text-primary)] border border-transparent opacity-60 pr-14"
+                className="w-full px-3 py-2 rounded-lg text-sm bg-background-tertiary text-foreground border border-transparent opacity-60 pr-14"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-foreground-tertiary">
                 USDT
               </span>
             </div>
           </div>
 
-          <div className="flex justify-between text-xs text-[var(--text-tertiary)]">
+          <div className="flex justify-between text-xs text-foreground-tertiary">
             <span>Available</span>
-            <span className="text-[var(--text-primary)]">
+            <span className="text-foreground">
               {orderSide === 'buy'
                 ? '10,000.00 USDT'
                 : `1.50 ${selectedPair.symbol.split('/')[0]}`}
@@ -175,9 +175,9 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
           </div>
 
           {/* Slider */}
-          <div className="h-1 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
+          <div className="h-1 bg-background-tertiary rounded-full overflow-hidden">
             <div
-              className="h-full bg-[var(--color-buy)] rounded-full transition-all"
+              className="h-full bg-success rounded-full transition-all"
               style={{ width: `${Math.min(percentage, 100)}%` }}
             />
           </div>
@@ -195,14 +195,14 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
       </div>
 
       {/* Orders Section */}
-      <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--border-primary)]">
-        <div className="flex px-3 border-b border-[var(--border-primary)]">
+      <div className="flex-1 flex flex-col min-h-0 border-t border-border">
+        <div className="flex px-3 border-b border-border">
           <button
             onClick={() => setActiveTab('open')}
             className={`px-2 py-3 text-xs font-medium border-b-2 transition-colors ${
               activeTab === 'open'
-                ? 'text-[var(--text-primary)] border-[var(--color-buy)]'
-                : 'text-[var(--text-tertiary)] border-transparent hover:text-[var(--text-primary)]'
+                ? 'text-foreground border-success'
+                : 'text-foreground-tertiary border-transparent hover:text-foreground'
             }`}
           >
             Open Orders ({OPEN_ORDERS.length})
@@ -211,8 +211,8 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
             onClick={() => setActiveTab('history')}
             className={`px-2 py-3 text-xs font-medium border-b-2 transition-colors ml-4 ${
               activeTab === 'history'
-                ? 'text-[var(--text-primary)] border-[var(--color-buy)]'
-                : 'text-[var(--text-tertiary)] border-transparent hover:text-[var(--text-primary)]'
+                ? 'text-foreground border-success'
+                : 'text-foreground-tertiary border-transparent hover:text-foreground'
             }`}
           >
             Order History
@@ -221,7 +221,7 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
 
         <div className="flex-1 overflow-y-auto p-3">
           {activeTab === 'open' && OPEN_ORDERS.length === 0 && (
-            <div className="flex items-center justify-center h-24 text-sm text-[var(--text-tertiary)]">
+            <div className="flex items-center justify-center h-24 text-sm text-foreground-tertiary">
               No open orders
             </div>
           )}
@@ -230,47 +230,47 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
             OPEN_ORDERS.map((order) => (
               <div
                 key={order.id}
-                className="p-3 mb-2 rounded-lg bg-[var(--bg-tertiary)]"
+                className="p-3 mb-2 rounded-lg bg-background-tertiary"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span
                     className={`text-xs font-semibold px-1.5 py-0.5 rounded ${
                       order.side === 'buy'
-                        ? 'text-[var(--color-buy)] bg-[var(--color-buy-light)]'
-                        : 'text-[var(--color-sell)] bg-[var(--color-sell-light)]'
+                        ? 'text-success bg-success-light'
+                        : 'text-danger bg-danger-light'
                     }`}
                   >
                     {order.side.toUpperCase()}
                   </span>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">
+                  <span className="text-sm font-medium text-foreground">
                     {order.pair}
                   </span>
-                  <span className="text-xs text-[var(--text-tertiary)] ml-auto">
+                  <span className="text-xs text-foreground-tertiary ml-auto">
                     {order.type}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 mb-2">
                   <div>
-                    <span className="block text-xs text-[var(--text-tertiary)]">
+                    <span className="block text-xs text-foreground-tertiary">
                       Price
                     </span>
-                    <span className="text-sm text-[var(--text-primary)]">
+                    <span className="text-sm text-foreground">
                       {formatPrice(order.price)}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-xs text-[var(--text-tertiary)]">
+                    <span className="block text-xs text-foreground-tertiary">
                       Amount
                     </span>
-                    <span className="text-sm text-[var(--text-primary)]">
+                    <span className="text-sm text-foreground">
                       {order.amount}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-xs text-[var(--text-tertiary)]">
+                    <span className="block text-xs text-foreground-tertiary">
                       Filled
                     </span>
-                    <span className="text-sm text-[var(--text-primary)]">
+                    <span className="text-sm text-foreground">
                       {((order.filled / order.amount) * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -282,7 +282,7 @@ export const TradingFormPanel: React.FC<TradingFormPanelProps> = ({
             ))}
 
           {activeTab === 'history' && (
-            <div className="flex items-center justify-center h-24 text-sm text-[var(--text-tertiary)]">
+            <div className="flex items-center justify-center h-24 text-sm text-foreground-tertiary">
               No order history
             </div>
           )}

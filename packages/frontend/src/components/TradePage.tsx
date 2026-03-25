@@ -77,7 +77,7 @@ export const TradePage: React.FC<TradePageProps> = ({ selectedPairId }) => {
   return (
     <>
       {/* Desktop Layout */}
-      <div className="hidden lg:grid lg:grid-cols-[280px_1fr_360px] h-[calc(100vh-64px)] bg-[var(--bg-primary)]">
+      <div className="hidden lg:grid lg:grid-cols-[280px_1fr_360px] h-[calc(100vh-64px)] bg-background">
         <PairListPanel
           pairs={filteredPairs}
           selectedPair={selectedPair}
@@ -96,7 +96,7 @@ export const TradePage: React.FC<TradePageProps> = ({ selectedPairId }) => {
       </div>
 
       {/* Tablet Layout */}
-      <div className="hidden md:grid md:grid-cols-[240px_1fr] lg:hidden h-[calc(100vh-64px)] bg-[var(--bg-primary)]">
+      <div className="hidden md:grid md:grid-cols-[240px_1fr] lg:hidden h-[calc(100vh-64px)] bg-background">
         <PairListPanel
           pairs={filteredPairs}
           selectedPair={selectedPair}
@@ -117,9 +117,9 @@ export const TradePage: React.FC<TradePageProps> = ({ selectedPairId }) => {
       </div>
 
       {/* Mobile Layout */}
-      <div className="md:hidden flex flex-col h-[calc(100vh-64px)] bg-[var(--bg-primary)]">
+      <div className="md:hidden flex flex-col h-[calc(100vh-64px)] bg-background">
         {/* Mobile Tab Navigation */}
-        <div className="flex border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+        <div className="flex border-b border-border bg-background-secondary">
           {[
             { id: 'pairs', label: 'Pairs' },
             { id: 'chart', label: 'Chart' },
@@ -130,8 +130,8 @@ export const TradePage: React.FC<TradePageProps> = ({ selectedPairId }) => {
               onClick={() => setActiveMobilePanel(tab.id as ActivePanel)}
               className={`flex-1 py-3 text-sm font-medium transition-colors ${
                 activeMobilePanel === tab.id
-                  ? 'text-[var(--text-primary)] border-b-2 border-[var(--color-buy)]'
-                  : 'text-[var(--text-secondary)]'
+                  ? 'text-foreground border-b-2 border-success'
+                  : 'text-foreground-secondary'
               }`}
             >
               {tab.label}

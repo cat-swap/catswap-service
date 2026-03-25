@@ -19,7 +19,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="text-sm font-medium text-[var(--text-primary)]"
+            className="text-sm font-medium text-foreground"
           >
             {label}
           </label>
@@ -29,12 +29,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={type}
           className={cn(
             'flex h-10 w-full rounded-lg border px-3 py-2 text-sm',
-            'bg-[var(--bg-input)] text-[var(--text-primary)]',
-            'border-transparent placeholder:text-[var(--text-tertiary)]',
+            'bg-background-tertiary text-foreground',
+            'border-transparent placeholder:text-foreground-tertiary',
             'transition-all duration-200',
-            'focus:outline-none focus:border-[var(--border-hover)]',
+            'focus:outline-none focus:border-border-hover',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-[var(--color-sell)] focus:border-[var(--color-sell)]',
+            error && 'border-danger focus:border-danger',
             className
           )}
           ref={ref}
@@ -45,12 +45,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p id={errorId} className="text-xs text-[var(--color-sell)]" role="alert">
+          <p id={errorId} className="text-xs text-danger" role="alert">
             {error}
           </p>
         )}
         {helperText && !error && (
-          <p id={helperId} className="text-xs text-[var(--text-secondary)]">
+          <p id={helperId} className="text-xs text-foreground-secondary">
             {helperText}
           </p>
         )}

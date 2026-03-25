@@ -17,14 +17,14 @@ export const PairListPanel: React.FC<PairListPanelProps> = ({
   onSelectPair,
 }) => {
   return (
-    <div className="flex flex-col h-full border-r border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+    <div className="flex flex-col h-full border-r border-border bg-background-secondary">
       {/* Search & Tabs */}
-      <div className="p-3 border-b border-[var(--border-primary)]">
+      <div className="p-3 border-b border-border">
         <div className="flex gap-1 mb-2">
           {['USDT', 'USD', 'BTC'].map((tab) => (
             <button
               key={tab}
-              className="flex-1 px-2 py-1.5 text-xs font-medium rounded transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
+              className="flex-1 px-2 py-1.5 text-xs font-medium rounded transition-colors text-foreground-secondary hover:text-foreground hover:bg-background-tertiary"
             >
               {tab}
             </button>
@@ -35,12 +35,12 @@ export const PairListPanel: React.FC<PairListPanelProps> = ({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search"
-          className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-input)] text-[var(--text-primary)] border border-transparent placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-hover)] transition-all"
+          className="w-full px-3 py-2 rounded-lg text-sm bg-background-tertiary text-foreground border border-transparent placeholder:text-foreground-tertiary focus:outline-none focus:border-border-hover transition-all"
         />
       </div>
 
       {/* Header Row */}
-      <div className="grid grid-cols-3 px-3 py-2 text-xs text-[var(--text-tertiary)] border-b border-[var(--border-primary)]">
+      <div className="grid grid-cols-3 px-3 py-2 text-xs text-foreground-tertiary border-b border-border">
         <span>Pair</span>
         <span className="text-right">Last Price</span>
         <span className="text-right">24h Change</span>
@@ -52,22 +52,22 @@ export const PairListPanel: React.FC<PairListPanelProps> = ({
           <div
             key={pair.id}
             onClick={() => onSelectPair(pair)}
-            className={`grid grid-cols-3 px-3 py-2.5 cursor-pointer transition-colors hover:bg-[var(--bg-tertiary)] ${
+            className={`grid grid-cols-3 px-3 py-2.5 cursor-pointer transition-colors hover:bg-background-tertiary ${
               selectedPair.id === pair.id
-                ? 'bg-[var(--bg-tertiary)] border-l-2 border-[var(--color-buy)]'
+                ? 'bg-background-tertiary border-l-2 border-success'
                 : ''
             }`}
           >
             <div className="flex flex-col">
-              <span className="text-sm font-medium text-[var(--text-primary)]">
+              <span className="text-sm font-medium text-foreground">
                 {pair.symbol.replace('/USDT', '')}
               </span>
-              <span className="text-xs text-[var(--text-tertiary)]">
+              <span className="text-xs text-foreground-tertiary">
                 Vol {formatVolume(pair.volume24h)}
               </span>
             </div>
             <div className="text-right">
-              <span className="text-sm text-[var(--text-primary)]">
+              <span className="text-sm text-foreground">
                 {formatPrice(pair.price)}
               </span>
             </div>
@@ -75,8 +75,8 @@ export const PairListPanel: React.FC<PairListPanelProps> = ({
               <span
                 className={`text-sm ${
                   pair.change24h >= 0
-                    ? 'text-[var(--color-buy)]'
-                    : 'text-[var(--color-sell)]'
+                    ? 'text-success'
+                    : 'text-danger'
                 }`}
               >
                 {pair.change24h >= 0 ? '+' : ''}

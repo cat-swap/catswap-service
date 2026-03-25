@@ -32,10 +32,10 @@ const TokenInput: React.FC<TokenInputProps> = ({
   readOnly = false,
   valueInUsd,
 }) => (
-  <div className="bg-[var(--bg-tertiary)] rounded-xl p-4">
+  <div className="bg-background-tertiary rounded-xl p-4">
     <div className="flex items-center justify-between mb-2">
-      <span className="text-xs text-[var(--text-tertiary)]">{label}</span>
-      <span className="text-xs text-[var(--text-tertiary)]">Balance: {balance}</span>
+      <span className="text-xs text-foreground-tertiary">{label}</span>
+      <span className="text-xs text-foreground-tertiary">Balance: {balance}</span>
     </div>
     <div className="flex items-center gap-3">
       <select
@@ -45,7 +45,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
             TOKENS.find((t) => t.id === e.target.value) || TOKENS[0]
           )
         }
-        className="bg-[var(--bg-tertiary)] text-[var(--text-primary)] font-semibold text-lg outline-none border-none cursor-pointer"
+        className="bg-background-tertiary text-foreground font-semibold text-lg outline-none border-none cursor-pointer"
       >
         {TOKENS.map((t) => (
           <option key={t.id} value={t.id}>
@@ -59,12 +59,12 @@ const TokenInput: React.FC<TokenInputProps> = ({
         onChange={(e) => onAmountChange?.(e.target.value)}
         placeholder="0.00"
         readOnly={readOnly}
-        className="flex-1 bg-transparent text-right text-2xl font-semibold text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="flex-1 bg-transparent text-right text-2xl font-semibold text-foreground outline-none placeholder:text-foreground-tertiary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
     </div>
     {valueInUsd && (
       <div className="text-right mt-1">
-        <span className="text-xs text-[var(--text-tertiary)]">${valueInUsd}</span>
+        <span className="text-xs text-foreground-tertiary">${valueInUsd}</span>
       </div>
     )}
   </div>
@@ -123,13 +123,13 @@ export const SwapPage: React.FC = () => {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Swap</CardTitle>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[var(--text-tertiary)]">
+              <span className="text-xs text-foreground-tertiary">
                 Slippage
               </span>
               <select
                 value={slippage}
                 onChange={(e) => setSlippage(e.target.value)}
-                className="bg-[var(--bg-tertiary)] text-[var(--text-primary)] text-xs rounded px-2 py-1 border border-[var(--border-primary)] outline-none"
+                className="bg-background-tertiary text-foreground text-xs rounded px-2 py-1 border border-border outline-none"
               >
                 <option value="0.1">0.1%</option>
                 <option value="0.5">0.5%</option>
@@ -155,7 +155,7 @@ export const SwapPage: React.FC = () => {
                 variant="secondary"
                 size="icon"
                 onClick={handleSwap}
-                className="rounded-full border border-[var(--border-primary)]"
+                className="rounded-full border border-border"
               >
                 <ArrowDown size={20} />
               </Button>
@@ -173,9 +173,9 @@ export const SwapPage: React.FC = () => {
             />
 
             {/* Rate Info */}
-            <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)] pt-4">
+            <div className="flex items-center justify-between text-xs text-foreground-tertiary pt-4">
               <span>Rate</span>
-              <span className="text-[var(--text-primary)]">
+              <span className="text-foreground">
                 1 {fromToken.symbol} ={' '}
                 {(fromToken.price / toToken.price).toFixed(6)} {toToken.symbol}
               </span>
