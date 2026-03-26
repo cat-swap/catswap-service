@@ -1,22 +1,15 @@
-import { useState, Suspense, lazy } from 'react';
+import { useState } from 'react';
 import { Header } from './components/Header';
 import { SpotTradingPage } from './components/SpotTradingPage';
+import { PerpsTradingPage } from './components/PerpsTradingPage';
+import { PoolsPage } from './components/PoolsPage';
 import { useWallet } from './hooks/useWallet';
 import { useTheme } from './hooks/useTheme';
 import './App.css';
 
-// Lazy load heavy pages that use recharts
-const PerpsTradingPage = lazy(() => import('./components/PerpsTradingPage'));
-const PoolsPage = lazy(() => import('./components/PoolsPage'));
-
 type Page = 'spot' | 'perps' | 'pools';
 
-// Simple loading fallback
-const PageLoader = () => (
-  <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--okx-primary)]" />
-  </div>
-);
+
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('spot');
@@ -36,17 +29,9 @@ function App() {
       case 'spot':
         return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
       case 'perps':
-        return (
-          <Suspense fallback={<PageLoader />}>
-            <PerpsTradingPage wallet={wallet} onConnectWallet={handleConnect} />
-          </Suspense>
-        );
+        return <PerpsTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
       case 'pools':
-        return (
-          <Suspense fallback={<PageLoader />}>
-            <PoolsPage />
-          </Suspense>
-        );
+        return <PoolsPage />;
       default:
         return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
     }

@@ -137,7 +137,7 @@ export const TradingPairModal: React.FC<TradingPairModalProps> = ({
       {/* Modal */}
       <div 
         ref={modalRef}
-        className="relative w-full max-w-[520px] max-h-[70vh] bg-[var(--bg-primary)] rounded-xl shadow-2xl border border-[var(--border-primary)] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-[520px] max-h-[70vh] bg-[var(--bg-secondary)] rounded-xl shadow-2xl border border-[var(--border-primary)] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)]">
@@ -159,7 +159,7 @@ export const TradingPairModal: React.FC<TradingPairModalProps> = ({
               placeholder="Search crypto"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[var(--bg-secondary)] text-[var(--text-primary)] text-sm rounded-lg pl-10 pr-4 py-2.5 border border-[var(--border-primary)] outline-none focus:border-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)]"
+              className="w-full bg-[var(--bg-primary)] text-[var(--text-primary)] text-sm rounded-lg pl-10 pr-4 py-2.5 border border-[var(--border-primary)] outline-none focus:border-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)]"
               autoFocus
             />
           </div>
@@ -218,8 +218,8 @@ export const TradingPairModal: React.FC<TradingPairModalProps> = ({
                   }}
                   className={`grid grid-cols-[1fr_100px_80px] px-4 py-3 cursor-pointer transition-colors border-b border-[var(--border-primary)] last:border-b-0 ${
                     isCurrent 
-                      ? 'bg-[var(--bg-tertiary)]' 
-                      : 'hover:bg-[var(--bg-secondary)]'
+                      ? 'bg-[var(--bg-primary)]' 
+                      : 'hover:bg-[var(--bg-primary)]'
                   }`}
                 >
                   {/* Name */}
