@@ -49,7 +49,7 @@ function App() {
         onToggleTheme={toggleTheme}
       />
 
-      <main className="pt-14 sm:pt-16 md:pt-16 min-h-screen">
+      <main className="pt-[45px] sm:pt-[52px] pb-20 md:pb-0 min-h-screen">
         {renderPage()}
       </main>
 

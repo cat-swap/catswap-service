@@ -11,21 +11,11 @@ interface TradingViewChartProps {
   onTimeFrameChange: (tf: TimeFrame) => void;
 }
 
-const TIME_FRAMES: { value: TimeFrame; label: string }[] = [
-  { value: '1m', label: '1m' },
-  { value: '5m', label: '5m' },
-  { value: '15m', label: '15m' },
-  { value: '1H', label: '1H' },
-  { value: '4H', label: '4H' },
-  { value: '1D', label: '1D' },
-  { value: '1W', label: '1W' },
-];
-
 export const TradingViewChart: React.FC<TradingViewChartProps> = ({
-  selectedPair,
+  selectedPair: _selectedPair,
   candleData,
-  timeFrame,
-  onTimeFrameChange,
+  timeFrame: _timeFrame,
+  onTimeFrameChange: _onTimeFrameChange,
 }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -155,63 +145,9 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
     chartRef.current?.timeScale().fitContent();
   }, [candleData, isChartReady]);
 
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
-
-  const formatVolume = (volume: number) => {
-    if (volume >= 1e9) return (volume / 1e9).toFixed(2) + 'B';
-    if (volume >= 1e6) return (volume / 1e6).toFixed(2) + 'M';
-    if (volume >= 1e3) return (volume / 1e3).toFixed(2) + 'K';
-    return volume.toFixed(2);
-  };
-
-  const priceChangeColor = selectedPair.change24h >= 0 ? 'text-[var(--color-buy)]' : 'text-[var(--color-sell)]';
-  const priceChangeSign = selectedPair.change24h >= 0 ? '+' : '';
-
   return (
     <div className="flex flex-col h-full bg-[var(--bg-secondary)]">
-      {/* Stats Bar */}
-      <div className="flex items-center gap-6 px-4 py-2 border-b border-[var(--border-primary)] overflow-x-auto">
-        <div className="flex flex-col">
-          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">Mark Price</span>
-          <span className={`text-sm font-semibold ${priceChangeColor}`}>
-            {formatPrice(selectedPair.price)}
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">Index Price</span>
-          <span className="text-sm font-medium text-[var(--text-primary)]">
-            {formatPrice(selectedPair.price * 0.9998)}
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">24h High</span>
-          <span className="text-sm font-medium text-[var(--text-primary)]">
-            {formatPrice(selectedPair.high24h)}
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">24h Low</span>
-          <span className="text-sm font-medium text-[var(--text-primary)]">
-            {formatPrice(selectedPair.low24h)}
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">24h Volume</span>
-          <span className="text-sm font-medium text-[var(--text-primary)]">
-            {formatVolume(selectedPair.volume24h)}
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] text-[var(--text-tertiary)] uppercase">24h Change</span>
-          <span className={`text-sm font-medium ${priceChangeColor}`}>
-            {priceChangeSign}{selectedPair.change24h}%
-          </span>
-        </div>
-      </div>
-
-      {/* Time Frame Selector */}
+      {/* Time Frame Selector -->
       <div className="flex items-center gap-1 px-4 py-2 border-b border-[var(--border-primary)]">
         {TIME_FRAMES.map((tf) => (
           <button
@@ -229,7 +165,7 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
       </div>
 
       {/* Chart Container */}
-      <div ref={chartContainerRef} className="flex-1 min-h-0" />
+      <div ref={chartContainerRef} className="flex-1 min-h-[300px]" />
     </div>
   );
 };

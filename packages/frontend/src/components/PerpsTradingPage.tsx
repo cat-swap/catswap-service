@@ -45,11 +45,11 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
   const priceChangeSign = selectedPair.change24h >= 0 ? '+' : '';
 
   return (
-    <div className="h-[calc(100vh-68px)] bg-[var(--bg-primary)] flex flex-col gap-1">
+    <div className="h-[calc(100vh-68px)] bg-[var(--bg-primary)] flex flex-col gap-px lg:gap-1">
       {/* Main Content - 模块 3 & 4 */}
-      <div className="flex-1 flex gap-1 min-h-0">
+      <div className="flex-1 flex gap-px lg:gap-1 min-h-0">
         {/* Left - Pair Info + Chart + Orders Panel */}
-        <div className="flex-1 min-w-0 flex flex-col gap-1">
+        <div className="flex-1 min-w-0 flex flex-col gap-px lg:gap-1">
           {/* Pair Info Bar - 只在左侧显示 */}
           <div className="bg-[var(--bg-secondary)] px-4 py-2">
             <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
@@ -130,7 +130,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
           </div>
           
           {/* Orders Panel */}
-          <div className="h-[200px] bg-[var(--bg-secondary)] overflow-hidden">
+          <div className="h-[160px] bg-[var(--bg-secondary)] overflow-hidden">
             <OrdersPanel wallet={wallet} />
           </div>
         </div>
@@ -146,7 +146,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
       </div>
 
       {/* Mobile Trading Buttons */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 bg-[var(--bg-secondary)] border-t border-[var(--border-primary)]">
+      <div className="md:hidden fixed bottom-[52px] left-0 right-0 p-3 bg-[var(--bg-secondary)] border-t border-[var(--border-primary)]">
         <div className="flex gap-3">
           <button
             onClick={wallet.connected ? () => {} : onConnectWallet}

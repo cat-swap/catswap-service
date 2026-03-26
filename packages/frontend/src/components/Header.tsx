@@ -72,26 +72,24 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
+    <>
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 bg-[var(--bg-secondary)] border-b-4 border-[var(--bg-primary)]`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 bg-[var(--bg-secondary)] border-b border-[var(--border-primary)]`}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="h-14 sm:h-16 flex items-center justify-between">
+        <div className="h-10 sm:h-11 flex items-center justify-between">
           {/* Logo & Brand */}
           <div className="flex items-center gap-8">
             <div 
-              className="flex items-center gap-2 cursor-pointer group"
+              className="flex items-center cursor-pointer group"
               onClick={() => onPageChange('spot')}
             >
-              {/* Logo Icon */}
+              {/* Logo - 根据主题切换 */}
               <img 
-                src="/assets/catswap.svg" 
+                src={theme === 'dark' ? '/logo_dark.svg' : '/logo_light.svg'}
                 alt="CatSwap"
-                className="w-8 h-8 rounded-md"
+                className="h-[26px] w-auto"
               />
-              <span className="text-lg font-bold text-[var(--text-primary)] tracking-tight">
-                CatSwap
-              </span>
             </div>
 
             {/* Desktop Navigation */}
@@ -202,23 +200,25 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      <nav className="md:hidden flex items-center justify-around border-t border-[var(--border-primary)] bg-[var(--bg-primary)]">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onPageChange(item.id)}
-            className={`flex-1 py-3 text-xs font-medium transition-all duration-200 ${
-              currentPage === item.id
-                ? 'text-[var(--text-primary)] border-b-2 border-[var(--text-primary)]'
-                : 'text-[var(--text-secondary)]'
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </nav>
     </header>
+
+    {/* Mobile Bottom Navigation */}
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-[var(--border-primary)] bg-[var(--bg-secondary)] pb-safe">
+      {navItems.map((item) => (
+        <button
+          key={item.id}
+          onClick={() => onPageChange(item.id)}
+          className={`flex-1 py-3 text-xs font-medium transition-all duration-200 ${
+            currentPage === item.id
+              ? 'text-[var(--text-primary)]'
+              : 'text-[var(--text-secondary)]'
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </nav>
+    </>
   );
 };
 
