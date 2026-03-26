@@ -1,0 +1,170 @@
+import React, { useState, useMemo } from 'react';
+import { Star, ChevronDown } from 'lucide-react';
+import { TradingPair, WalletInfo } from '../types';
+import { tradingPairs, generateCandleData } from '../data/mockData';
+import { TradingPairModal, TradingViewChart, PerpsTradingForm, OrdersPanel } from './spot';
+
+type TimeFrame = '1m' | '5m' | '15m' | '1H' | '4H' | '1D' | '1W';
+
+interface PerpsTradingPageProps {
+  wallet: WalletInfo;
+  onConnectWallet: () => void;
+}
+
+const TOKEN_ICONS: Record<string, string> = {
+  BTC: '₿', ETH: 'Ξ', SOL: '◎', BNB: 'B', XRP: '✕',
+  DOGE: 'Ð', ADA: '₳', AVAX: 'A', USDT: '₮', USDC: 'U',
+};
+
+const TOKEN_COLORS: Record<string, string> = {
+  BTC: '#F7931A', ETH: '#627EEA', SOL: '#14F195', BNB: '#F3BA2F',
+  XRP: '#23292F', DOGE: '#C2A633', ADA: '#0033AD', AVAX: '#E84142',
+  USDT: '#26A17B', USDC: '#2775CA',
+};
+
+export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
+  wallet,
+  onConnectWallet,
+}) => {
+  const [selectedPair, setSelectedPair] = useState<TradingPair>(tradingPairs[0]);
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>('15m');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const candleData = useMemo(() => generateCandleData(selectedPair.price), [selectedPair]);
+
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const getTokenIcon = (symbol: string) => TOKEN_ICONS[symbol.split('/')[0]] || symbol[0];
+  const getTokenColor = (symbol: string) => TOKEN_COLORS[symbol.split('/')[0]] || '#888';
+
+  const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
+  const priceChangeColor = selectedPair.change24h >= 0 ? 'text-[#0ECB81]' : 'text-[#F6465D]';
+  const priceChangeSign = selectedPair.change24h >= 0 ? '+' : '';
+
+  return (
+    <div className="h-[calc(100vh-68px)] bg-[var(--bg-primary)] flex flex-col gap-1">
+      {/* Main Content - 模块 3 & 4 */}
+      <div className="flex-1 flex gap-1 min-h-0">
+        {/* Left - Pair Info + Chart + Orders Panel */}
+        <div className="flex-1 min-w-0 flex flex-col gap-1">
+          {/* Pair Info Bar - 只在左侧显示 */}
+          <div className="bg-[var(--bg-secondary)] px-4 py-2">
+            <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
+              {/* Pair Selector */}
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center gap-2 hover:bg-[var(--bg-tertiary)] px-2 py-1 rounded transition-colors shrink-0"
+              >
+                <div 
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                  style={{ backgroundColor: getTokenColor(selectedPair.symbol) }}
+                >
+                  {getTokenIcon(selectedPair.symbol)}
+                </div>
+                <span className="text-base font-semibold text-[var(--text-primary)]">
+                  {selectedPair.symbol}
+                </span>
+                <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+                  Perp
+                </span>
+                <ChevronDown className="w-4 h-4 text-[var(--text-secondary)]" />
+              </button>
+
+              {/* Star */}
+              <button
+                onClick={() => setIsFavorite(!isFavorite)}
+                className={`transition-colors shrink-0 ${isFavorite ? 'text-yellow-500' : 'text-[var(--text-tertiary)] hover:text-yellow-500'}`}
+              >
+                <Star className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+              </button>
+
+              {/* Price Info */}
+              <div className="flex items-center gap-3 shrink-0">
+                <span className={`text-lg font-bold ${priceChangeColor}`}>
+                  {formatPrice(selectedPair.price)}
+                </span>
+                <span className={`text-sm ${priceChangeColor}`}>
+                  {priceChangeSign}{selectedPair.change24h}%
+                </span>
+              </div>
+
+              {/* Stats - 紧凑排列 */}
+              <div className="hidden md:flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[var(--text-tertiary)]">24h High</span>
+                  <span className="text-[var(--text-primary)] font-medium">{formatPrice(selectedPair.high24h)}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[var(--text-tertiary)]">24h Low</span>
+                  <span className="text-[var(--text-primary)] font-medium">{formatPrice(selectedPair.low24h)}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[var(--text-tertiary)]">24h Vol</span>
+                  <span className="text-[var(--text-primary)] font-medium">
+                    {(selectedPair.volume24h / 1e9).toFixed(2)}B {quoteToken}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[var(--text-tertiary)]">Funding</span>
+                  <span className="text-[#0ECB81] font-medium">+0.01%</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[var(--text-tertiary)]">Countdown</span>
+                  <span className="text-[var(--text-primary)] font-medium">02:34:12</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Chart */}
+          <div className="flex-1 min-h-0 bg-[var(--bg-secondary)] overflow-hidden">
+            <TradingViewChart
+              selectedPair={selectedPair}
+              candleData={candleData}
+              timeFrame={timeFrame}
+              onTimeFrameChange={setTimeFrame}
+            />
+          </div>
+          
+          {/* Orders Panel */}
+          <div className="h-[200px] bg-[var(--bg-secondary)] overflow-hidden">
+            <OrdersPanel wallet={wallet} />
+          </div>
+        </div>
+
+        {/* Right - Trading Form */}
+        <div className="w-[320px] bg-[var(--bg-secondary)] overflow-hidden hidden md:block">
+          <PerpsTradingForm
+            selectedPair={selectedPair}
+            wallet={wallet}
+            onConnectWallet={onConnectWallet}
+          />
+        </div>
+      </div>
+
+      {/* Mobile Trading Button */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[var(--bg-secondary)]">
+        <button
+          onClick={wallet.connected ? () => {} : onConnectWallet}
+          className="w-full py-3 bg-[#0ECB81] text-black text-sm font-semibold"
+        >
+          {wallet.connected ? 'Buy / Long' : 'Connect Wallet'}
+        </button>
+      </div>
+
+      {/* Trading Pair Modal */}
+      <TradingPairModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelectPair={setSelectedPair}
+        currentPair={selectedPair}
+        allPairs={tradingPairs}
+      />
+    </div>
+  );
+};
+
+export default PerpsTradingPage;

@@ -1,12 +1,12 @@
 import { useState, Suspense, lazy } from 'react';
 import { Header } from './components/Header';
-import { SwapPage } from './components/SwapPage';
+import { SpotTradingPage } from './components/SpotTradingPage';
 import { useWallet } from './hooks/useWallet';
 import { useTheme } from './hooks/useTheme';
 import './App.css';
 
 // Lazy load heavy pages that use recharts
-const TradePage = lazy(() => import('./components/TradePage'));
+const PerpsTradingPage = lazy(() => import('./components/PerpsTradingPage'));
 const PoolsPage = lazy(() => import('./components/PoolsPage'));
 
 type Page = 'spot' | 'perps' | 'pools';
@@ -34,11 +34,11 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'spot':
-        return <SwapPage />;
+        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
       case 'perps':
         return (
           <Suspense fallback={<PageLoader />}>
-            <TradePage />
+            <PerpsTradingPage wallet={wallet} onConnectWallet={handleConnect} />
           </Suspense>
         );
       case 'pools':
@@ -48,7 +48,7 @@ function App() {
           </Suspense>
         );
       default:
-        return <SwapPage />;
+        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
     }
   };
 

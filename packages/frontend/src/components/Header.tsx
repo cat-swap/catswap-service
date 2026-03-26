@@ -32,16 +32,6 @@ export const Header: React.FC<HeaderProps> = ({
   const [showDropdown, setShowDropdown] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const [isScrolled, setIsScrolled] = React.useState(false);
-
-  // Handle scroll effect
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Close dropdown when clicking outside
   React.useEffect(() => {
@@ -83,11 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        isScrolled 
-          ? 'bg-[var(--bg-primary)]/95 backdrop-blur-md border-b border-[var(--border-primary)]' 
-          : 'bg-[var(--bg-primary)] border-b border-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 bg-[var(--bg-secondary)] border-b-4 border-[var(--bg-primary)]`}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-14 sm:h-16 flex items-center justify-between">
@@ -98,9 +84,11 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => onPageChange('spot')}
             >
               {/* Logo Icon */}
-              <div className="w-7 h-7 rounded-md bg-[var(--text-primary)] flex items-center justify-center">
-                <span className="text-[var(--bg-primary)] font-bold text-sm">C</span>
-              </div>
+              <img 
+                src="/assets/catswap.svg" 
+                alt="CatSwap"
+                className="w-8 h-8 rounded-md"
+              />
               <span className="text-lg font-bold text-[var(--text-primary)] tracking-tight">
                 CatSwap
               </span>
@@ -204,7 +192,7 @@ export const Header: React.FC<HeaderProps> = ({
             ) : (
               <button
                 onClick={onConnectWallet}
-                className="px-4 py-1.5 rounded-md bg-[var(--text-primary)] text-[var(--bg-primary)] text-sm font-medium hover:opacity-90 transition-all duration-200"
+                className="px-4 py-1.5 rounded-md bg-[var(--text-primary)] text-[var(--bg-secondary)] text-sm font-medium hover:opacity-90 transition-all duration-200"
               >
                 <span className="hidden sm:inline">Connect Wallet</span>
                 <span className="sm:hidden">Connect</span>
