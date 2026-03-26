@@ -143,6 +143,7 @@
     @apply antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 18px; /* 等比例放大字体 ~12.5% */
   }
 
   body {

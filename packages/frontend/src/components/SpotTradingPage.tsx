@@ -136,14 +136,22 @@ export const SpotTradingPage: React.FC<SpotTradingPageProps> = ({
         </div>
       </div>
 
-      {/* Mobile Trading Button */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[var(--bg-secondary)]">
-        <button
-          onClick={wallet.connected ? () => {} : onConnectWallet}
-          className="w-full py-3 bg-[#0ECB81] text-black text-sm font-semibold"
-        >
-          {wallet.connected ? `Buy ${baseToken}` : 'Connect Wallet'}
-        </button>
+      {/* Mobile Trading Buttons */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 bg-[var(--bg-secondary)] border-t border-[var(--border-primary)]">
+        <div className="flex gap-3">
+          <button
+            onClick={wallet.connected ? () => {} : onConnectWallet}
+            className="flex-1 py-3 bg-[#0ECB81] text-black text-sm font-semibold rounded-md"
+          >
+            Buy {baseToken}
+          </button>
+          <button
+            onClick={wallet.connected ? () => {} : onConnectWallet}
+            className="flex-1 py-3 bg-[#F6465D] text-white text-sm font-semibold rounded-md"
+          >
+            Sell {baseToken}
+          </button>
+        </div>
       </div>
 
       {/* Trading Pair Modal */}
