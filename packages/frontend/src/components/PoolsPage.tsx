@@ -1,24 +1,35 @@
 import React, { useState } from 'react';
-import { Plus, Search, TrendingUp, DollarSign, BarChart3 } from 'lucide-react';
+import { Plus, Search, TrendingUp, DollarSign, BarChart3, ChevronDown } from 'lucide-react';
 
 interface Pool {
   id: string;
   tokenA: string;
   tokenB: string;
   tvl: number;
-  apr: number;
+  providers: number;
   volume24h: number;
-  fee: number;
-  feeTier: string;
+  fee24h: number;
+  apr7d: number;
+  hasPosition: boolean;
+  hasFees: boolean;
 }
 
+const TOKEN_COLORS: Record<string, string> = {
+  BTC: '#F7931A',
+  ETH: '#627EEA',
+  SOL: '#14F195',
+  BNB: '#F3BA2F',
+  USDT: '#26A17B',
+  USDC: '#2775CA',
+};
+
 const POOLS: Pool[] = [
-  { id: '1', tokenA: 'BTC', tokenB: 'USDT', tvl: 245000000, apr: 12.5, volume24h: 89000000, fee: 0.3, feeTier: '0.3%' },
-  { id: '2', tokenA: 'ETH', tokenB: 'USDT', tvl: 156000000, apr: 8.2, volume24h: 45000000, fee: 0.3, feeTier: '0.3%' },
-  { id: '3', tokenA: 'BTC', tokenB: 'ETH', tvl: 89000000, apr: 15.3, volume24h: 23000000, fee: 0.3, feeTier: '0.3%' },
-  { id: '4', tokenA: 'SOL', tokenB: 'USDT', tvl: 45000000, apr: 18.7, volume24h: 12000000, fee: 0.3, feeTier: '0.3%' },
-  { id: '5', tokenA: 'ETH', tokenB: 'USDC', tvl: 67000000, apr: 6.8, volume24h: 18000000, fee: 0.05, feeTier: '0.05%' },
-  { id: '6', tokenA: 'BTC', tokenB: 'USDC', tvl: 34000000, apr: 10.2, volume24h: 8900000, fee: 0.05, feeTier: '0.05%' },
+  { id: '1', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 90.49, apr7d: 90.49, hasPosition: true, hasFees: true },
+  { id: '2', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 50.88, apr7d: 50.88, hasPosition: true, hasFees: true },
+  { id: '3', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 8.56, apr7d: 8.56, hasPosition: true, hasFees: true },
+  { id: '4', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 20.88, apr7d: 20.88, hasPosition: true, hasFees: false },
+  { id: '5', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 10.88, apr7d: 10.88, hasPosition: false, hasFees: false },
+  { id: '6', tokenA: 'ETH', tokenB: 'USDT', tvl: 32400000, providers: 85, volume24h: 32400000, fee24h: 15.23, apr7d: 15.23, hasPosition: true, hasFees: true },
 ];
 
 const formatCurrency = (value: number) => {
@@ -52,67 +63,121 @@ const StatCard: React.FC<StatCardProps> = ({ icon, label, value, change }) => (
   </div>
 );
 
+const TokenIcon: React.FC<{ symbol: string; className?: string }> = ({ symbol, className = '' }) => (
+  <div
+    className={`rounded-full flex items-center justify-center text-white text-xs font-bold ${className}`}
+    style={{ backgroundColor: TOKEN_COLORS[symbol] || '#888' }}
+  >
+    {symbol[0]}
+  </div>
+);
+
+const FeeTag: React.FC<{ low: string; high: string }> = ({ low, high }) => (
+  <div className="flex items-center gap-1">
+    <span className="text-xs text-[var(--text-secondary)]">{low}</span>
+    <span className="text-xs text-[var(--text-secondary)]">{high}</span>
+  </div>
+);
+
+const ActionButton: React.FC<{ 
+  children: React.ReactNode; 
+  variant?: 'primary' | 'outline' | 'ghost';
+  onClick?: () => void;
+}> = ({ children, variant = 'outline', onClick }) => {
+  const baseClasses = "px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200";
+  const variantClasses = {
+    primary: "bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90",
+    outline: "border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] hover:border-[var(--text-primary)]",
+    ghost: "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+  };
+  
+  return (
+    <button onClick={onClick} className={`${baseClasses} ${variantClasses[variant]}`}>
+      {children}
+    </button>
+  );
+};
+
 interface PoolRowProps {
   pool: Pool;
 }
 
 const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
   <div
-    className="grid grid-cols-12 px-4 sm:px-6 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors cursor-pointer"
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-      }
-    }}
+    className="grid grid-cols-[180px_120px_100px_100px_100px_100px_100px_100px_120px] px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
   >
-    {/* Pool */}
-    <div className="col-span-4 sm:col-span-3 flex items-center gap-3">
-      <div className="flex -space-x-2">
-        <div className="w-8 h-8 rounded-full bg-[var(--bg-quaternary)] flex items-center justify-center text-[var(--text-primary)] text-xs font-bold border-2 border-[var(--bg-secondary)]">
-          {pool.tokenA[0]}
-        </div>
-        <div className="w-8 h-8 rounded-full bg-[var(--bg-quaternary)] flex items-center justify-center text-[var(--text-secondary)] text-xs font-bold border-2 border-[var(--bg-secondary)]">
-          {pool.tokenB[0]}
-        </div>
+    {/* Pools */}
+    <div className="flex items-center gap-3">
+      <div className="flex -space-x-1.5">
+        <TokenIcon symbol={pool.tokenA} className="w-7 h-7 border-2 border-[var(--bg-secondary)]" />
+        <TokenIcon symbol={pool.tokenB} className="w-7 h-7 border-2 border-[var(--bg-secondary)]" />
       </div>
       <div>
-        <span className="text-sm font-medium text-[var(--text-primary)]">
+        <div className="text-sm font-medium text-[var(--text-primary)]">
           {pool.tokenA}/{pool.tokenB}
-        </span>
-        <span className="hidden sm:block text-xs text-[var(--text-tertiary)]">
-          Fee {pool.feeTier}
-        </span>
+        </div>
+        <FeeTag low="0.08%" high="10%" />
       </div>
     </div>
     
-    {/* TVL */}
-    <div className="col-span-3 sm:col-span-2 text-right">
-      <span className="text-sm text-[var(--text-primary)]">
+    {/* Liquidity */}
+    <div className="text-right">
+      <div className="text-sm font-medium text-[var(--text-primary)]">
         {formatCurrency(pool.tvl)}
-      </span>
+      </div>
+      <div className="text-xs text-[var(--text-tertiary)]">
+        {pool.providers} providers
+      </div>
     </div>
     
-    {/* APR */}
-    <div className="col-span-2 text-right">
-      <span className="text-sm text-[var(--color-buy)]">
-        {pool.apr}%
-      </span>
-    </div>
-    
-    {/* Volume - Hidden on mobile */}
-    <div className="hidden sm:block col-span-2 text-right">
+    {/* 24H Vol */}
+    <div className="text-right">
       <span className="text-sm text-[var(--text-primary)]">
         {formatCurrency(pool.volume24h)}
       </span>
     </div>
     
-    {/* Fee */}
-    <div className="col-span-3 sm:col-span-2 text-right">
-      <span className="text-sm text-[var(--text-secondary)]">
-        {pool.fee}%
+    {/* 24H Fee/L */}
+    <div className="text-right">
+      <span className="text-sm text-[var(--text-primary)]">
+        {pool.fee24h.toFixed(2)}%
       </span>
+    </div>
+    
+    {/* 7D RAPR */}
+    <div className="text-right">
+      <span className="text-sm text-[var(--color-buy)]">
+        {pool.apr7d.toFixed(2)}%
+      </span>
+    </div>
+    
+    {/* Deposit */}
+    <div className="text-center">
+      <ActionButton>deposit</ActionButton>
+    </div>
+    
+    {/* Positions */}
+    <div className="text-center">
+      {pool.hasPosition ? (
+        <ActionButton>remove</ActionButton>
+      ) : (
+        <span className="text-sm text-[var(--text-tertiary)]">-</span>
+      )}
+    </div>
+    
+    {/* Fees */}
+    <div className="text-center">
+      {pool.hasFees ? (
+        <ActionButton>claim</ActionButton>
+      ) : (
+        <span className="text-sm text-[var(--text-tertiary)]">-</span>
+      )}
+    </div>
+    
+    {/* Trade */}
+    <div className="flex items-center justify-end gap-2">
+      <ActionButton variant="outline">spot</ActionButton>
+      <ActionButton variant="outline">perp</ActionButton>
     </div>
   </div>
 );
@@ -129,7 +194,7 @@ export const PoolsPage: React.FC = () => {
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-[var(--bg-secondary)]">
-      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
@@ -205,12 +270,21 @@ export const PoolsPage: React.FC = () => {
         {/* Pools Table */}
         <div className="bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-12 px-4 sm:px-6 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
-            <span className="col-span-4 sm:col-span-3">Pool</span>
-            <span className="col-span-3 sm:col-span-2 text-right">TVL</span>
-            <span className="col-span-2 text-right">APR</span>
-            <span className="hidden sm:block col-span-2 text-right">24h Volume</span>
-            <span className="col-span-3 sm:col-span-2 text-right">Fee</span>
+          <div className="grid grid-cols-[180px_120px_100px_100px_100px_100px_100px_100px_120px] px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
+            <span className="flex items-center gap-1">
+              Pools
+            </span>
+            <span className="flex items-center justify-end gap-1 cursor-pointer hover:text-[var(--text-primary)]">
+              Liquidity
+              <ChevronDown className="w-3 h-3" />
+            </span>
+            <span className="text-right">24H Vol</span>
+            <span className="text-right">24H Fee/L</span>
+            <span className="text-right">7D RAPR</span>
+            <span className="text-center">Deposit</span>
+            <span className="text-center">Positions</span>
+            <span className="text-center">Fees</span>
+            <span className="text-right">Trade</span>
           </div>
 
           {/* Table Body */}
