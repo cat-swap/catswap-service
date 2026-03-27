@@ -104,7 +104,7 @@ interface PoolRowProps {
 
 const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
   <div
-    className="grid grid-cols-[180px_120px_100px_100px_100px_100px_100px_100px_120px] px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
+    className="grid grid-cols-[minmax(180px,2fr)_repeat(4,minmax(100px,1fr))_repeat(3,minmax(80px,1fr))_minmax(140px,1.5fr)] px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
   >
     {/* Pools */}
     <div className="flex items-center gap-3">
@@ -144,7 +144,7 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
       </span>
     </div>
     
-    {/* 7D RAPR */}
+    {/* 7D APR */}
     <div className="text-right">
       <span className="text-sm text-[var(--color-buy)]">
         {pool.apr7d.toFixed(2)}%
@@ -270,7 +270,7 @@ export const PoolsPage: React.FC = () => {
         {/* Pools Table */}
         <div className="bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-[180px_120px_100px_100px_100px_100px_100px_100px_120px] px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
+          <div className="grid grid-cols-[minmax(180px,2fr)_repeat(4,minmax(100px,1fr))_repeat(3,minmax(80px,1fr))_minmax(140px,1.5fr)] px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
             <span className="flex items-center gap-1">
               Pools
             </span>
@@ -280,7 +280,7 @@ export const PoolsPage: React.FC = () => {
             </span>
             <span className="text-right">24H Vol</span>
             <span className="text-right">24H Fee/L</span>
-            <span className="text-right">7D RAPR</span>
+            <span className="text-right">7D APR</span>
             <span className="text-center">Deposit</span>
             <span className="text-center">Positions</span>
             <span className="text-center">Fees</span>
