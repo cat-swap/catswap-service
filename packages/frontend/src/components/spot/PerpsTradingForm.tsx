@@ -304,7 +304,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
       {/* Leverage Modal */}
       {showLeverageModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-[360px] bg-[var(--bg-secondary)] rounded-lg shadow-xl">
+          <div className="w-[360px] bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)]" style={{ boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.5)' }}>
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)]">
               <span className="text-sm font-semibold text-[var(--text-primary)]">Adjust leverage</span>

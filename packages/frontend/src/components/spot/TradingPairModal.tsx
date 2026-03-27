@@ -137,7 +137,8 @@ export const TradingPairModal: React.FC<TradingPairModalProps> = ({
       {/* Modal */}
       <div 
         ref={modalRef}
-        className="relative w-full max-w-[520px] max-h-[70vh] bg-[var(--bg-secondary)] rounded-xl shadow-2xl border border-[var(--border-primary)] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-[520px] max-h-[70vh] bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-primary)] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)]">
