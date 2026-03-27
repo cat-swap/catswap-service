@@ -78,7 +78,7 @@ const ActionButton: React.FC<{
   variant?: 'primary' | 'outline' | 'ghost';
   onClick?: () => void;
 }> = ({ children, variant = 'outline', onClick }) => {
-  const baseClasses = "min-w-[60px] px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200";
+  const baseClasses = "w-[60px] h-[28px] flex items-center justify-center text-xs font-medium rounded-full transition-all duration-200";
   const variantClasses = {
     primary: "bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90",
     outline: "border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] hover:border-[var(--text-primary)]",
