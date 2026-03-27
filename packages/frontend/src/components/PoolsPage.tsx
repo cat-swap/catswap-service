@@ -10,6 +10,7 @@ interface Pool {
   volume24h: number;
   fee24h: number;
   apr7d: number;
+  feeTier: string;
   hasPosition: boolean;
   hasFees: boolean;
 }
@@ -24,12 +25,12 @@ const TOKEN_COLORS: Record<string, string> = {
 };
 
 const POOLS: Pool[] = [
-  { id: '1', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 90.49, apr7d: 90.49, hasPosition: true, hasFees: true },
-  { id: '2', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 50.88, apr7d: 50.88, hasPosition: true, hasFees: true },
-  { id: '3', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 8.56, apr7d: 8.56, hasPosition: true, hasFees: true },
-  { id: '4', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 20.88, apr7d: 20.88, hasPosition: true, hasFees: false },
-  { id: '5', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 10.88, apr7d: 10.88, hasPosition: false, hasFees: false },
-  { id: '6', tokenA: 'ETH', tokenB: 'USDT', tvl: 32400000, providers: 85, volume24h: 32400000, fee24h: 15.23, apr7d: 15.23, hasPosition: true, hasFees: true },
+  { id: '1', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 90.49, apr7d: 90.49, feeTier: '0.08% / 10%', hasPosition: true, hasFees: true },
+  { id: '2', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 50.88, apr7d: 50.88, feeTier: '0.5% / 50%', hasPosition: true, hasFees: true },
+  { id: '3', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 8.56, apr7d: 8.56, feeTier: '0.5% / 50%', hasPosition: true, hasFees: true },
+  { id: '4', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 20.88, apr7d: 20.88, feeTier: '0.5% / 50%', hasPosition: true, hasFees: false },
+  { id: '5', tokenA: 'BTC', tokenB: 'USDT', tvl: 50780000, providers: 100, volume24h: 50780000, fee24h: 10.88, apr7d: 10.88, feeTier: '0.5% / 50%', hasPosition: false, hasFees: false },
+  { id: '6', tokenA: 'ETH', tokenB: 'USDT', tvl: 32400000, providers: 85, volume24h: 32400000, fee24h: 15.23, apr7d: 15.23, feeTier: '0.08% / 10%', hasPosition: true, hasFees: true },
 ];
 
 const formatCurrency = (value: number) => {
@@ -72,19 +73,12 @@ const TokenIcon: React.FC<{ symbol: string; className?: string }> = ({ symbol, c
   </div>
 );
 
-const FeeTag: React.FC<{ low: string; high: string }> = ({ low, high }) => (
-  <div className="flex items-center gap-1">
-    <span className="text-xs text-[var(--text-secondary)]">{low}</span>
-    <span className="text-xs text-[var(--text-secondary)]">{high}</span>
-  </div>
-);
-
 const ActionButton: React.FC<{ 
   children: React.ReactNode; 
   variant?: 'primary' | 'outline' | 'ghost';
   onClick?: () => void;
 }> = ({ children, variant = 'outline', onClick }) => {
-  const baseClasses = "px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200";
+  const baseClasses = "min-w-[60px] px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200";
   const variantClasses = {
     primary: "bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90",
     outline: "border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] hover:border-[var(--text-primary)]",
@@ -98,13 +92,19 @@ const ActionButton: React.FC<{
   );
 };
 
+const FeeTag: React.FC<{ text: string }> = ({ text }) => (
+  <span className="px-1.5 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+    {text}
+  </span>
+);
+
 interface PoolRowProps {
   pool: Pool;
 }
 
 const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
   <div
-    className="grid grid-cols-[minmax(180px,2fr)_repeat(4,minmax(100px,1fr))_repeat(3,minmax(80px,1fr))_minmax(140px,1.5fr)] px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
+    className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_repeat(2,minmax(140px,1fr))_minmax(140px,1fr)] gap-x-6 px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
   >
     {/* Pools */}
     <div className="flex items-center gap-3">
@@ -116,7 +116,10 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
         <div className="text-sm font-medium text-[var(--text-primary)]">
           {pool.tokenA}/{pool.tokenB}
         </div>
-        <FeeTag low="0.08%" high="10%" />
+        <div className="flex items-center gap-1 mt-0.5">
+          <FeeTag text="0.08%" />
+          <FeeTag text="10%" />
+        </div>
       </div>
     </div>
     
@@ -146,22 +149,18 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
     
     {/* 7D APR */}
     <div className="text-right">
-      <span className="text-sm text-[var(--color-buy)]">
+      <span className="text-sm text-[var(--text-primary)]">
         {pool.apr7d.toFixed(2)}%
       </span>
     </div>
     
-    {/* Deposit */}
-    <div className="text-center">
-      <ActionButton>deposit</ActionButton>
-    </div>
-    
     {/* Positions */}
-    <div className="text-center">
+    <div className="flex items-center justify-center gap-3">
+      <ActionButton>deposit</ActionButton>
       {pool.hasPosition ? (
         <ActionButton>remove</ActionButton>
       ) : (
-        <span className="text-sm text-[var(--text-tertiary)]">-</span>
+        <span className="min-w-[60px] px-3 py-1.5 text-xs text-center text-[var(--text-tertiary)]">-</span>
       )}
     </div>
     
@@ -175,7 +174,7 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
     </div>
     
     {/* Trade */}
-    <div className="flex items-center justify-end gap-2">
+    <div className="flex items-center justify-center gap-2">
       <ActionButton variant="outline">spot</ActionButton>
       <ActionButton variant="outline">perp</ActionButton>
     </div>
@@ -270,10 +269,8 @@ export const PoolsPage: React.FC = () => {
         {/* Pools Table */}
         <div className="bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-[minmax(180px,2fr)_repeat(4,minmax(100px,1fr))_repeat(3,minmax(80px,1fr))_minmax(140px,1.5fr)] px-4 py-3 border-b border-[var(--border-primary)] text-xs font-medium text-[var(--text-tertiary)] uppercase">
-            <span className="flex items-center gap-1">
-              Pools
-            </span>
+          <div className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_repeat(2,minmax(140px,1fr))_minmax(140px,1fr)] gap-x-6 px-4 py-3 border-b border-[var(--border-primary)] text-xs text-[var(--text-tertiary)]">
+            <span>Pools</span>
             <span className="flex items-center justify-end gap-1 cursor-pointer hover:text-[var(--text-primary)]">
               Liquidity
               <ChevronDown className="w-3 h-3" />
@@ -281,10 +278,9 @@ export const PoolsPage: React.FC = () => {
             <span className="text-right">24H Vol</span>
             <span className="text-right">24H Fee/L</span>
             <span className="text-right">7D APR</span>
-            <span className="text-center">Deposit</span>
             <span className="text-center">Positions</span>
             <span className="text-center">Fees</span>
-            <span className="text-right">Trade</span>
+            <span className="text-center">Trade</span>
           </div>
 
           {/* Table Body */}
