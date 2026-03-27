@@ -181,7 +181,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
           <div className="py-2">
             <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
               <div
-                className={`absolute h-full rounded-full transition-all ${isBuy ? 'bg-[#0ECB81]' : 'bg-[#F6465D]'}`}
+                className="absolute h-full rounded-full bg-[var(--text-primary)] transition-all"
                 style={{ width: `${sliderValue}%` }}
               />
               <input
@@ -197,7 +197,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
                 {[0, 25, 50, 75, 100].map((pct) => (
                   <div
                     key={pct}
-                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? (isBuy ? 'bg-[#0ECB81]' : 'bg-[#F6465D]') : 'bg-[var(--bg-quaternary)]'}`}
+                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'}`}
                   />
                 ))}
               </div>

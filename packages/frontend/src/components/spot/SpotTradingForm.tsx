@@ -152,7 +152,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
 
       <div className="flex-1 overflow-y-auto">
         {/* Order Type Tabs */}
-        <div className="flex items-center gap-1 px-3 py-3 border-b border-[var(--border-primary)]">
+        <div className="flex items-center gap-1 px-3 h-10 border-b border-[var(--border-primary)]">
           {(['limit', 'market'] as OrderType[]).map((type) => (
             <button
               key={type}
@@ -213,7 +213,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
           <div className="py-2">
             <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
               <div
-                className={`absolute h-full rounded-full transition-all ${isBuy ? 'bg-[#0ECB81]' : 'bg-[#F6465D]'}`}
+                className="absolute h-full rounded-full bg-[var(--text-primary)] transition-all"
                 style={{ width: `${sliderValue}%` }}
               />
               <input
@@ -229,7 +229,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
                 {[0, 25, 50, 75, 100].map((pct) => (
                   <div
                     key={pct}
-                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? (isBuy ? 'bg-[#0ECB81]' : 'bg-[#F6465D]') : 'bg-[var(--bg-quaternary)]'}`}
+                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'}`}
                   />
                 ))}
               </div>
@@ -260,7 +260,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
                 value={total > 0 ? total.toFixed(2) : ''}
                 readOnly
                 placeholder="0.00"
-                className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] opacity-60 pr-16"
+                className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] opacity-60 pr-16 outline-none focus:outline-none focus:ring-0"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
                 {quoteToken}
