@@ -25,6 +25,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
   const [leverage, setLeverage] = useState(20);
   const [showLeverageModal, setShowLeverageModal] = useState(false);
   const [leverageInput, setLeverageInput] = useState('20');
+  const [showSliderTooltip, setShowSliderTooltip] = useState(false);
 
   const baseToken = selectedPair.symbol.split('/')[0];
   const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
@@ -181,7 +182,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
           <div className="py-2">
             <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
               <div
-                className="absolute h-full rounded-full bg-[var(--text-primary)] transition-all"
+                className="absolute h-full rounded-full bg-[var(--text-primary)]"
                 style={{ width: `${sliderValue}%` }}
               />
               <input
@@ -190,14 +191,29 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
                 max="100"
                 value={sliderValue}
                 onChange={(e) => handleSliderChange(parseInt(e.target.value))}
+                onMouseDown={() => setShowSliderTooltip(true)}
+                onMouseUp={() => setShowSliderTooltip(false)}
+                onTouchStart={() => setShowSliderTooltip(true)}
+                onTouchEnd={() => setShowSliderTooltip(false)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
+              {/* Percentage Tooltip */}
+              {showSliderTooltip && (
+                <div
+                  className="absolute -top-8 px-2 py-1 bg-[var(--bg-tooltip)] text-white text-xs font-medium rounded pointer-events-none"
+                  style={{ left: `calc(${sliderValue}% - 20px)` }}
+                >
+                  {Math.round(sliderValue)}%
+                </div>
+              )}
               {/* Slider marks */}
               <div className="absolute inset-0 flex justify-between items-center pointer-events-none">
                 {[0, 25, 50, 75, 100].map((pct) => (
                   <div
                     key={pct}
-                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'}`}
+                    className={`w-2 h-2 rounded-full transition-transform ${
+                      sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'
+                    } ${showSliderTooltip && Math.abs(sliderValue - pct) < 5 ? 'scale-150' : ''}`}
                   />
                 ))}
               </div>

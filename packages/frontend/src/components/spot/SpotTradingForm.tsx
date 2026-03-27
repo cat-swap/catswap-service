@@ -26,6 +26,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
   const [marginLeverage, setMarginLeverage] = useState(3);
   const [showLeverageModal, setShowLeverageModal] = useState(false);
   const [leverageInput, setLeverageInput] = useState('3');
+  const [showSliderTooltip, setShowSliderTooltip] = useState(false);
 
   const baseToken = selectedPair.symbol.split('/')[0];
   const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
@@ -213,7 +214,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
           <div className="py-2">
             <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
               <div
-                className="absolute h-full rounded-full bg-[var(--text-primary)] transition-all"
+                className="absolute h-full rounded-full bg-[var(--text-primary)]"
                 style={{ width: `${sliderValue}%` }}
               />
               <input
@@ -222,14 +223,29 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
                 max="100"
                 value={sliderValue}
                 onChange={(e) => handleSliderChange(parseInt(e.target.value))}
+                onMouseDown={() => setShowSliderTooltip(true)}
+                onMouseUp={() => setShowSliderTooltip(false)}
+                onTouchStart={() => setShowSliderTooltip(true)}
+                onTouchEnd={() => setShowSliderTooltip(false)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
+              {/* Percentage Tooltip */}
+              {showSliderTooltip && (
+                <div
+                  className="absolute -top-8 px-2 py-1 bg-[var(--bg-tooltip)] text-white text-xs font-medium rounded pointer-events-none"
+                  style={{ left: `calc(${sliderValue}% - 20px)` }}
+                >
+                  {Math.round(sliderValue)}%
+                </div>
+              )}
               {/* Slider marks */}
               <div className="absolute inset-0 flex justify-between items-center pointer-events-none">
                 {[0, 25, 50, 75, 100].map((pct) => (
                   <div
                     key={pct}
-                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'}`}
+                    className={`w-2 h-2 rounded-full transition-transform ${
+                      sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'
+                    } ${showSliderTooltip && Math.abs(sliderValue - pct) < 5 ? 'scale-150' : ''}`}
                   />
                 ))}
               </div>
@@ -260,7 +276,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
                 value={total > 0 ? total.toFixed(2) : ''}
                 readOnly
                 placeholder="0.00"
-                className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] opacity-60 pr-16 outline-none focus:outline-none focus:ring-0"
+                className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] pr-16 cursor-default"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
                 {quoteToken}
