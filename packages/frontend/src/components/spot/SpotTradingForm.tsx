@@ -242,7 +242,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
               {showSliderTooltip && (
                 <div
                   className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[var(--text-primary)] pointer-events-none"
-                  style={{ left: `calc(${sliderValue}% - 6px)` }}
+                  style={{ left: `calc(${sliderValue}% - ${sliderValue * 0.12}px)` }}
                 />
               )}
               {/* Slider marks */}
