@@ -206,14 +206,19 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
                   {Math.round(sliderValue)}%
                 </div>
               )}
+              {/* Active thumb indicator */}
+              {showSliderTooltip && (
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[var(--text-primary)] pointer-events-none"
+                  style={{ left: `calc(${sliderValue}% - 6px)` }}
+                />
+              )}
               {/* Slider marks */}
               <div className="absolute inset-0 flex justify-between items-center pointer-events-none">
                 {[0, 25, 50, 75, 100].map((pct) => (
                   <div
                     key={pct}
-                    className={`w-2 h-2 rounded-full transition-transform ${
-                      sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'
-                    } ${showSliderTooltip && Math.abs(sliderValue - pct) < 5 ? 'scale-150' : ''}`}
+                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'}`}
                   />
                 ))}
               </div>
