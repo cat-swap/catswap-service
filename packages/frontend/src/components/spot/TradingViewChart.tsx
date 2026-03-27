@@ -11,11 +11,21 @@ interface TradingViewChartProps {
   onTimeFrameChange: (tf: TimeFrame) => void;
 }
 
+const TIME_FRAMES: { value: TimeFrame; label: string }[] = [
+  { value: '1m', label: '1m' },
+  { value: '5m', label: '5m' },
+  { value: '15m', label: '15m' },
+  { value: '1H', label: '1H' },
+  { value: '4H', label: '4H' },
+  { value: '1D', label: '1D' },
+  { value: '1W', label: '1W' },
+];
+
 export const TradingViewChart: React.FC<TradingViewChartProps> = ({
   selectedPair: _selectedPair,
   candleData,
-  timeFrame: _timeFrame,
-  onTimeFrameChange: _onTimeFrameChange,
+  timeFrame,
+  onTimeFrameChange,
 }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -33,8 +43,8 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
         textColor: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#888',
       },
       grid: {
-        vertLines: { color: getComputedStyle(document.documentElement).getPropertyValue('--border-primary').trim() || '#2B2B43', style: 1 },
-        horzLines: { color: getComputedStyle(document.documentElement).getPropertyValue('--border-primary').trim() || '#2B2B43', style: 1 },
+        vertLines: { visible: false },
+        horzLines: { visible: false },
       },
       crosshair: {
         mode: 1,
@@ -52,14 +62,14 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
         },
       },
       rightPriceScale: {
-        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--border-primary').trim() || '#2B2B43',
+        borderVisible: false,
         scaleMargins: {
           top: 0.1,
           bottom: 0.2,
         },
       },
       timeScale: {
-        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--border-primary').trim() || '#2B2B43',
+        borderVisible: false,
         timeVisible: true,
         secondsVisible: false,
       },
@@ -147,7 +157,7 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
 
   return (
     <div className="flex flex-col h-full bg-[var(--bg-secondary)]">
-      {/* Time Frame Selector -->
+      {/* Time Frame Selector */}
       <div className="flex items-center gap-1 px-4 py-2 border-b border-[var(--border-primary)]">
         {TIME_FRAMES.map((tf) => (
           <button

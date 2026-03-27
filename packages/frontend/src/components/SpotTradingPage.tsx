@@ -80,27 +80,27 @@ export const SpotTradingPage: React.FC<SpotTradingPageProps> = ({
                 <Star className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
               </button>
 
-              {/* Price Info */}
-              <div className="flex items-center gap-3 shrink-0">
+              {/* Price Info - 两行显示 */}
+              <div className="flex flex-col shrink-0">
                 <span className={`text-lg font-bold ${priceChangeColor}`}>
                   {formatPrice(selectedPair.price)}
                 </span>
-                <span className={`text-sm ${priceChangeColor}`}>
+                <span className={`text-xs ${priceChangeColor}`}>
                   {priceChangeSign}{selectedPair.change24h}%
                 </span>
               </div>
 
-              {/* Stats - 紧凑排列 */}
+              {/* Stats - 两行显示 */}
               <div className="hidden md:flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-col">
                   <span className="text-[var(--text-tertiary)]">24h High</span>
                   <span className="text-[var(--text-primary)] font-medium">{formatPrice(selectedPair.high24h)}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-col">
                   <span className="text-[var(--text-tertiary)]">24h Low</span>
                   <span className="text-[var(--text-primary)] font-medium">{formatPrice(selectedPair.low24h)}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-col">
                   <span className="text-[var(--text-tertiary)]">24h Vol</span>
                   <span className="text-[var(--text-primary)] font-medium">
                     {(selectedPair.volume24h / 1e9).toFixed(2)}B {quoteToken}

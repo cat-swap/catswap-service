@@ -24,7 +24,8 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
   const [sliderValue, setSliderValue] = useState(0);
   const [marginEnabled, setMarginEnabled] = useState(false);
   const [marginLeverage, setMarginLeverage] = useState(3);
-  const [showLeverageDropdown, setShowLeverageDropdown] = useState(false);
+  const [showLeverageModal, setShowLeverageModal] = useState(false);
+  const [leverageInput, setLeverageInput] = useState('3');
 
   const baseToken = selectedPair.symbol.split('/')[0];
   const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
@@ -95,57 +96,30 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
           <span className="text-sm font-medium text-[var(--text-primary)]">Margin</span>
           <button
             onClick={() => setMarginEnabled(!marginEnabled)}
-            className={`relative w-9 h-5 rounded-full transition-colors ${
-              marginEnabled ? 'bg-black border border-[#2E2E2E]' : 'bg-[#999999]'
+            className={`relative w-7 h-4 rounded-full transition-colors flex items-center ${
+              marginEnabled 
+                ? 'bg-[var(--text-primary)]' 
+                : 'bg-[var(--text-tertiary)]'
             }`}
           >
             <span
-              className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
-                marginEnabled ? 'translate-x-4' : 'translate-x-0'
+              className={`absolute w-3 h-3 rounded-full bg-[var(--bg-primary)] transition-transform ${
+                marginEnabled ? 'translate-x-[14px]' : 'translate-x-[2px]'
               }`}
             />
           </button>
           
           {/* Leverage Selector (only when margin enabled) */}
           {marginEnabled && (
-            <div className="relative ml-1">
-              <button
-                onClick={() => setShowLeverageDropdown(!showLeverageDropdown)}
-                className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-quaternary)] transition-colors"
-              >
-                {marginLeverage}x
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {showLeverageDropdown && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-40"
-                    onClick={() => setShowLeverageDropdown(false)}
-                  />
-                  <div className="absolute left-0 top-full mt-1 py-1 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-md shadow-lg z-50 min-w-[60px]">
-                    {MARGIN_LEVERAGE_OPTIONS.map((lev) => (
-                      <button
-                        key={lev}
-                        onClick={() => {
-                          setMarginLeverage(lev);
-                          setShowLeverageDropdown(false);
-                        }}
-                        className={`w-full px-3 py-1.5 text-xs text-left transition-colors ${
-                          marginLeverage === lev
-                            ? 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
-                            : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]'
-                        }`}
-                      >
-                        {lev}x
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
+            <button
+              onClick={() => setShowLeverageModal(true)}
+              className="flex items-center gap-1 px-2 h-4 text-xs font-medium rounded bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-quaternary)] transition-colors"
+            >
+              {marginLeverage}x
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
           )}
         </div>
       </div>
@@ -347,6 +321,98 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
           )}
         </div>
       </div>
+
+      {/* Leverage Modal */}
+      {showLeverageModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-[320px] bg-[var(--bg-secondary)] rounded-lg shadow-xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)]">
+              <span className="text-sm font-semibold text-[var(--text-primary)]">Adjust leverage</span>
+              <button
+                onClick={() => setShowLeverageModal(false)}
+                className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-4 space-y-4">
+              {/* Leverage Input */}
+              <div>
+                <label className="block text-xs text-[var(--text-secondary)] mb-2">Leverage</label>
+                <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[var(--bg-tertiary)] border border-[var(--border-primary)]">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={leverageInput}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      setLeverageInput(val);
+                    }}
+                    onBlur={() => {
+                      let val = parseInt(leverageInput) || 1;
+                      val = Math.min(Math.max(val, 2), 10);
+                      setMarginLeverage(val);
+                      setLeverageInput(String(val));
+                    }}
+                    className="flex-1 bg-transparent text-sm text-[var(--text-primary)] outline-none"
+                  />
+                  <span className="text-sm text-[var(--text-secondary)]">x</span>
+                </div>
+              </div>
+
+              {/* Leverage Options */}
+              <div className="flex flex-wrap gap-2">
+                {MARGIN_LEVERAGE_OPTIONS.map((lev) => (
+                  <button
+                    key={lev}
+                    onClick={() => {
+                      setMarginLeverage(lev);
+                      setLeverageInput(String(lev));
+                    }}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+                      marginLeverage === lev
+                        ? 'bg-[var(--text-primary)] text-[var(--bg-primary)]'
+                        : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    }`}
+                  >
+                    {lev}x
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-[var(--border-primary)]">
+              <button
+                onClick={() => {
+                  setLeverageInput(String(marginLeverage));
+                  setShowLeverageModal(false);
+                }}
+                className="px-4 py-2 text-xs font-medium rounded-md border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  let val = parseInt(leverageInput) || 2;
+                  val = Math.min(Math.max(val, 2), 10);
+                  setMarginLeverage(val);
+                  setLeverageInput(String(val));
+                  setShowLeverageModal(false);
+                }}
+                className="px-4 py-2 text-xs font-medium rounded-md bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90 transition-opacity"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
