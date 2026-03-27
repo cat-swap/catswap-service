@@ -179,7 +179,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
           </div>
 
           {/* Slider */}
-          <div className="py-2">
+          <div className="py-1">
             <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
               <div
                 className="absolute h-full rounded-full bg-[var(--text-primary)]"

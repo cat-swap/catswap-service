@@ -211,7 +211,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
           </div>
 
           {/* Slider */}
-          <div className="py-2">
+          <div className="py-1">
             <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
               <div
                 className="absolute h-full rounded-full bg-[var(--text-primary)]"
@@ -266,22 +266,17 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
           </div>
 
           {/* Total */}
-          <div>
-            <label className="block text-xs text-[var(--text-secondary)] mb-1.5">
-              Total ({quoteToken})
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={total > 0 ? total.toFixed(2) : ''}
-                readOnly
-                placeholder="0.00"
-                className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] pr-16 cursor-default"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
-                {quoteToken}
-              </span>
-            </div>
+          <div className="relative">
+            <input
+              type="text"
+              value={total > 0 ? total.toFixed(2) : ''}
+              readOnly
+              placeholder={`Total (${quoteToken})`}
+              className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] focus:outline-none focus:border-[var(--text-primary)] transition-all pr-16 opacity-60"
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
+              {quoteToken}
+            </span>
           </div>
 
           {/* Margin Required (only when margin enabled) */}
