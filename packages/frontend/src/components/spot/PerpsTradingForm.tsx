@@ -60,9 +60,11 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
   };
 
   const handleAmountChange = (value: string) => {
+    // 禁止输入负数
+    if (value.startsWith('-')) return;
     setAmount(value);
     const numValue = parseFloat(value);
-    if (maxAmount > 0 && !isNaN(numValue)) {
+    if (maxAmount > 0 && !isNaN(numValue) && numValue >= 0) {
       setSliderValue(Math.min((numValue / maxAmount) * 100, 100));
     }
   };

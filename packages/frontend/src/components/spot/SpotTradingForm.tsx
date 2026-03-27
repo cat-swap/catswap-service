@@ -10,7 +10,7 @@ interface SpotTradingFormProps {
   onConnectWallet: () => void;
 }
 
-const MARGIN_LEVERAGE_OPTIONS = [2, 3, 5, 10];
+const MARGIN_LEVERAGE_OPTIONS = [1, 2, 3, 5, 10];
 
 export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
   selectedPair,
@@ -67,9 +67,11 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
   };
 
   const handleAmountChange = (value: string) => {
+    // 禁止输入负数
+    if (value.startsWith('-')) return;
     setAmount(value);
     const numValue = parseFloat(value);
-    if (maxAmount > 0 && !isNaN(numValue)) {
+    if (maxAmount > 0 && !isNaN(numValue) && numValue >= 0) {
       setSliderValue(Math.min((numValue / maxAmount) * 100, 100));
     }
   };
@@ -355,7 +357,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
                     }}
                     onBlur={() => {
                       let val = parseInt(leverageInput) || 1;
-                      val = Math.min(Math.max(val, 2), 10);
+                      val = Math.min(Math.max(val, 1), 10);
                       setMarginLeverage(val);
                       setLeverageInput(String(val));
                     }}
@@ -399,8 +401,8 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
               </button>
               <button
                 onClick={() => {
-                  let val = parseInt(leverageInput) || 2;
-                  val = Math.min(Math.max(val, 2), 10);
+                  let val = parseInt(leverageInput) || 1;
+                  val = Math.min(Math.max(val, 1), 10);
                   setMarginLeverage(val);
                   setLeverageInput(String(val));
                   setShowLeverageModal(false);
