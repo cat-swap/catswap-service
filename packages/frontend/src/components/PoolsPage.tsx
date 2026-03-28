@@ -104,7 +104,7 @@ interface PoolRowProps {
 
 const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
   <div
-    className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_repeat(2,minmax(140px,1fr))_minmax(140px,1fr)] gap-x-6 px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
+    className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_minmax(100px,1fr)_minmax(80px,1fr)_minmax(160px,1.5fr)] gap-x-8 px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
   >
     {/* Pools */}
     <div className="flex items-center gap-3">
@@ -165,11 +165,11 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
     </div>
     
     {/* Fees */}
-    <div className="text-center">
+    <div className="flex items-center justify-center">
       {pool.hasFees ? (
         <ActionButton>claim</ActionButton>
       ) : (
-        <span className="text-sm text-[var(--text-tertiary)]">-</span>
+        <span className="w-[60px] h-[28px] flex items-center justify-center text-xs text-[var(--text-tertiary)]">-</span>
       )}
     </div>
     
@@ -269,7 +269,7 @@ export const PoolsPage: React.FC = () => {
         {/* Pools Table */}
         <div className="bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_repeat(2,minmax(140px,1fr))_minmax(140px,1fr)] gap-x-6 px-4 py-3 border-b border-[var(--border-primary)] text-xs text-[var(--text-tertiary)]">
+          <div className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_minmax(100px,1fr)_minmax(80px,1fr)_minmax(160px,1.5fr)] gap-x-8 px-4 py-3 border-b border-[var(--border-primary)] text-xs text-[var(--text-tertiary)]">
             <span>Pools</span>
             <span className="flex items-center justify-end gap-1 cursor-pointer hover:text-[var(--text-primary)]">
               Liquidity
