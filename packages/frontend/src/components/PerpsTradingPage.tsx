@@ -157,13 +157,13 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
             onClick={wallet.connected ? () => {} : onConnectWallet}
             className="flex-1 py-3 bg-[#0ECB81] text-black text-sm font-semibold rounded-md"
           >
-            Buy / Long
+            Open
           </button>
           <button
             onClick={wallet.connected ? () => {} : onConnectWallet}
             className="flex-1 py-3 bg-[#F6465D] text-white text-sm font-semibold rounded-md"
           >
-            Sell / Short
+            Close
           </button>
         </div>
       </div>

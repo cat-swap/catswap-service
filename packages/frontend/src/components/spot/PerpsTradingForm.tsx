@@ -82,7 +82,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
 
   return (
     <div className="flex flex-col h-full bg-[var(--bg-secondary)]">
-      {/* Buy/Sell Tabs */}
+      {/* Open/Close Tabs */}
       <div className="grid grid-cols-2 gap-1 p-3 border-b border-[var(--border-primary)]">
         <button
           onClick={() => setOrderSide('buy')}
@@ -92,7 +92,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
               : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
-          Buy / Long
+          Open
         </button>
         <button
           onClick={() => setOrderSide('sell')}
@@ -102,13 +102,13 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
               : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
-          Sell / Short
+          Close
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto">
         {/* Order Type & Leverage Row */}
-        <div className="flex items-center justify-between px-3 py-3 border-b border-[var(--border-primary)]">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border-primary)]">
           <div className="flex items-center gap-1">
             {(['limit', 'market'] as OrderType[]).map((type) => (
               <button
@@ -288,7 +288,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
               className={`w-full py-3 rounded-md text-sm font-semibold transition-all ${buttonColor} ${buttonTextColor}`}
               disabled={!amount || parseFloat(amount) <= 0}
             >
-              {isBuy ? 'Buy / Long' : 'Sell / Short'} {baseToken}
+              {isBuy ? 'Open' : 'Close'} {baseToken}
             </button>
           ) : (
             <button
