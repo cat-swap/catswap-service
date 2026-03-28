@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Star, ChevronDown } from 'lucide-react';
 import { TradingPair, WalletInfo } from '../types';
 import { tradingPairs, generateCandleData } from '../data/mockData';
-import { TradingPairModal, TradingViewChart, PerpsTradingForm, OrdersPanel } from './spot';
+import { TradingPairModal, TradingViewChart, PerpsTradingForm, OrdersPanel, MobileTradingForm } from './spot';
 
 type TimeFrame = '1m' | '5m' | '15m' | '1H' | '4H' | '1D' | '1W';
 
@@ -35,6 +35,8 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('15m');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [mobileFormOpen, setMobileFormOpen] = useState(false);
+  const [mobileFormSide, setMobileFormSide] = useState<'buy' | 'sell'>('buy');
 
   const candleData = useMemo(() => generateCandleData(selectedPair.price), [selectedPair]);
 
@@ -154,19 +156,35 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
       <div className="md:hidden fixed bottom-[52px] left-0 right-0 p-3 bg-[var(--bg-secondary)] border-t border-[var(--border-primary)]">
         <div className="flex gap-3">
           <button
-            onClick={wallet.connected ? () => {} : onConnectWallet}
+            onClick={() => {
+              setMobileFormSide('buy');
+              setMobileFormOpen(true);
+            }}
             className="flex-1 py-3 bg-[#0ECB81] text-black text-sm font-semibold rounded-md"
           >
             Open
           </button>
           <button
-            onClick={wallet.connected ? () => {} : onConnectWallet}
+            onClick={() => {
+              setMobileFormSide('sell');
+              setMobileFormOpen(true);
+            }}
             className="flex-1 py-3 bg-[#F6465D] text-white text-sm font-semibold rounded-md"
           >
             Close
           </button>
         </div>
       </div>
+
+      {/* Mobile Trading Form */}
+      <MobileTradingForm
+        isOpen={mobileFormOpen}
+        onClose={() => setMobileFormOpen(false)}
+        selectedPair={selectedPair}
+        wallet={wallet}
+        onConnectWallet={onConnectWallet}
+        initialSide={mobileFormSide}
+      />
 
       {/* Trading Pair Modal */}
       <TradingPairModal
