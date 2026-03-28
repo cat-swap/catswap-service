@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Star, ChevronDown } from 'lucide-react';
 import { TradingPair, WalletInfo } from '../types';
 import { tradingPairs, generateCandleData } from '../data/mockData';
-import { TradingPairModal, TradingViewChart, PerpsTradingForm, OrdersPanel, MobileTradingForm } from './spot';
+import { TradingPairModal, TradingViewChart, PerpsTradingForm, OrdersPanel, MobilePerpTradingForm } from './spot';
 
 type TimeFrame = '1m' | '5m' | '15m' | '1H' | '4H' | '1D' | '1W';
 
@@ -36,7 +36,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [mobileFormOpen, setMobileFormOpen] = useState(false);
-  const [mobileFormSide, setMobileFormSide] = useState<'buy' | 'sell'>('buy');
+  const [mobileFormSide, setMobileFormSide] = useState<'open' | 'close'>('open');
 
   const candleData = useMemo(() => generateCandleData(selectedPair.price), [selectedPair]);
 
@@ -157,7 +157,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
         <div className="flex gap-3">
           <button
             onClick={() => {
-              setMobileFormSide('buy');
+              setMobileFormSide('open');
               setMobileFormOpen(true);
             }}
             className="flex-1 py-3 bg-[#0ECB81] text-black text-sm font-semibold rounded-md"
@@ -166,7 +166,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
           </button>
           <button
             onClick={() => {
-              setMobileFormSide('sell');
+              setMobileFormSide('close');
               setMobileFormOpen(true);
             }}
             className="flex-1 py-3 bg-[#F6465D] text-white text-sm font-semibold rounded-md"
@@ -177,13 +177,13 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
       </div>
 
       {/* Mobile Trading Form */}
-      <MobileTradingForm
+      <MobilePerpTradingForm
         isOpen={mobileFormOpen}
         onClose={() => setMobileFormOpen(false)}
         selectedPair={selectedPair}
         wallet={wallet}
         onConnectWallet={onConnectWallet}
-        initialSide={mobileFormSide}
+        initialMode={mobileFormSide}
       />
 
       {/* Trading Pair Modal */}
