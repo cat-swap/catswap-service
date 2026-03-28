@@ -231,7 +231,7 @@ export const CalculatorModal: React.FC<CalculatorModalProps> = ({
         <div className="flex-1 overflow-y-auto">
           <div className="p-4">
             {/* Pair Selector + Long/Short Toggle */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-[#F7931A] flex items-center justify-center text-white text-xs font-bold">
                   {baseToken[0]}
@@ -246,27 +246,27 @@ export const CalculatorModal: React.FC<CalculatorModalProps> = ({
 
               {/* Long/Short Toggle */}
               <div className="flex gap-1 p-1 rounded-lg bg-[var(--bg-tertiary)]">
-              <button
-                onClick={() => setSide('long')}
-                className={`py-2 text-sm font-semibold rounded-md transition-colors ${
-                  side === 'long'
-                    ? 'bg-[#0ECB81] text-white'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                Long
-              </button>
-              <button
-                onClick={() => setSide('short')}
-                className={`py-2 text-sm font-semibold rounded-md transition-colors ${
-                  side === 'short'
-                    ? 'bg-[#F6465D] text-white'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
-              >
-                Short
-              </button>
-            </div>
+                <button
+                  onClick={() => setSide('long')}
+                  className={`px-4 py-1 text-sm font-semibold rounded-md transition-colors ${
+                    side === 'long'
+                      ? 'bg-[#0ECB81] text-white'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  Long
+                </button>
+                <button
+                  onClick={() => setSide('short')}
+                  className={`px-4 py-1 text-sm font-semibold rounded-md transition-colors ${
+                    side === 'short'
+                      ? 'bg-[#F6465D] text-white'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  Short
+                </button>
+              </div>
             </div>
 
             <div className="flex gap-6">
