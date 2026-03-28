@@ -193,7 +193,7 @@ export const MobilePerpTradingForm: React.FC<MobilePerpTradingFormProps> = ({
               
               {/* Custom Thumb - Smaller, with proper boundary */}
               <div
-                className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-[var(--bg-secondary)] border-2 border-[var(--text-primary)] pointer-events-none transition-all duration-100 ${
+                className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-[var(--bg-secondary)] border-2 border-[var(--text-primary)] pointer-events-none ${
                   showSliderTooltip ? 'w-3 h-3' : 'w-2 h-2'
                 }`}
                 style={{ 
