@@ -28,6 +28,7 @@ export const MobilePerpTradingForm: React.FC<MobilePerpTradingFormProps> = ({
   const [leverage] = useState(100);
   const [sliderValue, setSliderValue] = useState(0);
   const [showSliderTooltip, setShowSliderTooltip] = useState(false);
+  const [tpslEnabled, setTpslEnabled] = useState(false);
 
   const baseToken = selectedPair.symbol.split('/')[0];
   const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
@@ -253,14 +254,23 @@ export const MobilePerpTradingForm: React.FC<MobilePerpTradingFormProps> = ({
           )}
 
           {/* TP/SL Checkbox */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="tpsl"
-              className="w-4 h-4 rounded border-[var(--border-primary)]"
-            />
-            <label htmlFor="tpsl" className="text-sm text-[var(--text-primary)]">TP/SL</label>
-          </div>
+          <button
+            onClick={() => setTpslEnabled(!tpslEnabled)}
+            className="flex items-center gap-2"
+          >
+            <div className={`w-4 h-4 rounded flex items-center justify-center transition-colors ${
+              tpslEnabled 
+                ? 'bg-[var(--text-primary)]' 
+                : 'bg-[var(--bg-tertiary)] border border-[var(--border-primary)]'
+            }`}>
+              {tpslEnabled && (
+                <svg className="w-3 h-3 text-[var(--bg-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </div>
+            <span className="text-sm text-[var(--text-primary)]">TP/SL</span>
+          </button>
 
           {/* Action Buttons */}
           {wallet.connected ? (
