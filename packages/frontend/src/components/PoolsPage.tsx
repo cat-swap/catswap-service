@@ -78,7 +78,7 @@ const ActionButton: React.FC<{
   variant?: 'primary' | 'outline' | 'ghost';
   onClick?: () => void;
 }> = ({ children, variant = 'outline', onClick }) => {
-  const baseClasses = "w-[60px] h-[28px] flex items-center justify-center text-xs font-medium rounded-full transition-all duration-200";
+  const baseClasses = "w-[68px] h-[30px] flex items-center justify-center px-2 text-xs font-medium rounded-full transition-all duration-200";
   const variantClasses = {
     primary: "bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90",
     outline: "border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] hover:border-[var(--text-primary)]",
@@ -92,11 +92,26 @@ const ActionButton: React.FC<{
   );
 };
 
-const FeeTag: React.FC<{ text: string }> = ({ text }) => (
-  <span className="px-1.5 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
-    {text}
-  </span>
-);
+const FeeTag: React.FC<{ text: string; tooltip: string }> = ({ text, tooltip }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  
+  return (
+    <div className="relative inline-block">
+      <span 
+        className="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] cursor-help"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        {text}
+      </span>
+      {showTooltip && (
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-[var(--bg-tooltip)] text-white text-xs font-medium rounded whitespace-nowrap z-10">
+          {tooltip}
+        </div>
+      )}
+    </div>
+  );
+};
 
 interface PoolRowProps {
   pool: Pool;
@@ -104,7 +119,7 @@ interface PoolRowProps {
 
 const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
   <div
-    className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_minmax(100px,1fr)_minmax(80px,1fr)_minmax(160px,1.5fr)] gap-x-8 px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors"
+    className="grid grid-cols-[minmax(140px,1.5fr)_minmax(100px,1fr)_minmax(90px,1fr)_minmax(80px,1fr)_minmax(70px,1fr)_minmax(70px,1fr)_minmax(90px,1fr)_minmax(120px,1fr)] gap-x-6 px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors even:bg-[var(--bg-tertiary)]/30"
   >
     {/* Pools */}
     <div className="flex items-center gap-3">
@@ -117,8 +132,8 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
           {pool.tokenA}/{pool.tokenB}
         </div>
         <div className="flex items-center gap-1 mt-0.5">
-          <FeeTag text="0.08%" />
-          <FeeTag text="10%" />
+          <FeeTag text="0.08%" tooltip="Trading Fee Rate" />
+          <FeeTag text="10%" tooltip="Price Range" />
         </div>
       </div>
     </div>
@@ -154,22 +169,22 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
       </span>
     </div>
     
+    {/* Fees */}
+    <div className="flex items-center justify-center">
+      {pool.hasFees ? (
+        <ActionButton>claim</ActionButton>
+      ) : (
+        <span className="w-[68px] h-[30px] flex items-center justify-center text-xs text-[var(--text-tertiary)]">-</span>
+      )}
+    </div>
+    
     {/* Positions */}
     <div className="flex items-center justify-center gap-3">
       <ActionButton>deposit</ActionButton>
       {pool.hasPosition ? (
         <ActionButton>remove</ActionButton>
       ) : (
-        <span className="min-w-[60px] px-3 py-1.5 text-xs text-center text-[var(--text-tertiary)]">-</span>
-      )}
-    </div>
-    
-    {/* Fees */}
-    <div className="flex items-center justify-center">
-      {pool.hasFees ? (
-        <ActionButton>claim</ActionButton>
-      ) : (
-        <span className="w-[60px] h-[28px] flex items-center justify-center text-xs text-[var(--text-tertiary)]">-</span>
+        <span className="w-[68px] h-[30px] flex items-center justify-center text-xs text-[var(--text-tertiary)]">-</span>
       )}
     </div>
     
@@ -269,7 +284,7 @@ export const PoolsPage: React.FC = () => {
         {/* Pools Table */}
         <div className="bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-[minmax(160px,2fr)_repeat(4,minmax(100px,1fr))_minmax(100px,1fr)_minmax(80px,1fr)_minmax(160px,1.5fr)] gap-x-8 px-4 py-3 border-b border-[var(--border-primary)] text-xs text-[var(--text-tertiary)]">
+          <div className="grid grid-cols-[minmax(140px,1.5fr)_minmax(100px,1fr)_minmax(90px,1fr)_minmax(80px,1fr)_minmax(70px,1fr)_minmax(70px,1fr)_minmax(90px,1fr)_minmax(120px,1fr)] gap-x-6 px-4 py-3 border-b border-[var(--border-primary)] text-xs text-[var(--text-tertiary)]">
             <span>Pools</span>
             <span className="flex items-center justify-end gap-1 cursor-pointer hover:text-[var(--text-primary)]">
               Liquidity
@@ -278,8 +293,8 @@ export const PoolsPage: React.FC = () => {
             <span className="text-right">24H Vol</span>
             <span className="text-right">24H Fee/L</span>
             <span className="text-right">7D APR</span>
-            <span className="text-center">Positions</span>
             <span className="text-center">Fees</span>
+            <span className="text-center">Positions</span>
             <span className="text-center">Trade</span>
           </div>
 
