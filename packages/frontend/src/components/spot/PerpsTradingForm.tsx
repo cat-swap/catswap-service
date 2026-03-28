@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { TradingPair, WalletInfo } from '../../types';
+import { CalculatorModal } from './CalculatorModal';
 
 
 type OrderType = 'limit' | 'market';
@@ -27,6 +28,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
   const [showLeverageModal, setShowLeverageModal] = useState(false);
   const [leverageInput, setLeverageInput] = useState('100');
   const [showSliderTooltip, setShowSliderTooltip] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
 
   const baseToken = selectedPair.symbol.split('/')[0];
   const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
@@ -337,7 +339,10 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
 
           {/* Bottom Links */}
           <div className="flex gap-4 pt-2 border-t border-[var(--border-primary)]">
-            <button className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+            <button 
+              onClick={() => setShowCalculator(true)}
+              className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
@@ -469,6 +474,13 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
           </div>
         </div>
       )}
+
+      {/* Calculator Modal */}
+      <CalculatorModal
+        isOpen={showCalculator}
+        onClose={() => setShowCalculator(false)}
+        selectedPair={selectedPair}
+      />
     </div>
   );
 };

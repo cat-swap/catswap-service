@@ -225,6 +225,165 @@ Semantic classes:
 
 ---
 
+## UI Component Standards
+
+### Button Standards
+
+#### Primary Button (CTA)
+
+```tsx
+<button className="px-4 py-3 rounded-full text-sm font-semibold bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90 transition-opacity">
+  Calculate
+</button>
+```
+
+**Properties:**
+- Background: `bg-[var(--text-primary)]` (inverted for high contrast)
+- Text: `text-[var(--bg-primary)]`
+- Border radius: `rounded-full` (pill shape for primary actions)
+- Font weight: `font-semibold`
+- Hover: `hover:opacity-90 transition-opacity`
+
+#### Action Buttons (Long/Short)
+
+```tsx
+// Long/Buy - Green
+<button className="py-3 rounded-full text-sm font-semibold bg-[#0ECB81] text-white hover:opacity-90 transition-opacity">
+  Long
+</button>
+
+// Short/Sell - Red  
+<button className="py-3 rounded-full text-sm font-semibold bg-[#F6465D] text-white hover:opacity-90 transition-opacity">
+  Short
+</button>
+```
+
+**Properties:**
+- Long/Buy: `bg-[#0ECB81] text-white`
+- Short/Sell: `bg-[#F6465D] text-white`
+- Border radius: `rounded-full`
+- Hover: `hover:opacity-90 transition-opacity`
+
+#### Secondary Button (Outline)
+
+```tsx
+<button className="px-4 py-2 rounded-md border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors">
+  Cancel
+</button>
+```
+
+**Properties:**
+- Border: `border border-[var(--border-primary)]`
+- Text: `text-[var(--text-primary)]`
+- Background: transparent (default)
+- Border radius: `rounded-md`
+- Hover: `hover:bg-[var(--bg-tertiary)] transition-colors`
+
+#### Tab/Toggle Button
+
+```tsx
+<button className="py-2 text-sm font-semibold rounded-md transition-colors bg-[var(--text-primary)] text-[var(--bg-primary)]">
+  Active
+</button>
+<button className="py-2 text-sm font-semibold rounded-md transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+  Inactive
+</button>
+```
+
+**Properties:**
+- Active: `bg-[var(--text-primary)] text-[var(--bg-primary)]`
+- Inactive: `text-[var(--text-secondary)] hover:text-[var(--text-primary)]`
+- Border radius: `rounded-md`
+- Always include `transition-colors`
+
+### Input Standards
+
+#### Number Input (Price, Amount)
+
+```tsx
+<div className="relative">
+  <input
+    type="number"
+    className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] focus:outline-none focus:border-[var(--text-primary)] transition-all pr-16"
+    placeholder="0.00"
+  />
+  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">
+    USDT
+  </span>
+</div>
+```
+
+**Properties:**
+- Background: `bg-[var(--bg-tertiary)]`
+- Border: `border border-[var(--border-primary)]` (always visible)
+- Text: `text-[var(--text-primary)]`
+- Border radius: `rounded-md` (6px)
+- Padding: `px-3 py-2.5`
+- Font size: `text-sm`
+- Focus: `focus:border-[var(--text-primary)]`
+- Transition: `transition-all`
+
+#### Select/Dropdown Button
+
+```tsx
+<button className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] flex items-center justify-between hover:bg-[var(--bg-quaternary)] transition-colors">
+  <span>Isolated</span>
+  <svg className="w-4 h-4 text-[var(--text-tertiary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+  </svg>
+</button>
+```
+
+---
+
+## Interaction Standards
+
+### Hover Effects
+
+All interactive elements must have consistent hover states:
+
+| Element | Hover Effect | Implementation |
+|---------|--------------|----------------|
+| Primary Button | Opacity dim | `hover:opacity-90 transition-opacity` |
+| Secondary Button | Background change | `hover:bg-[var(--bg-tertiary)] transition-colors` |
+| Tab/Nav Item | Text color change | `hover:text-[var(--text-primary)] transition-colors` |
+| Input Field | Border highlight | `focus:border-[var(--text-primary)] transition-all` |
+| Icon Button | Background fill | `hover:bg-[var(--bg-tertiary)] rounded-md` |
+| Link/Anchor | Text color + underline | `hover:underline hover:text-[var(--text-primary)]` |
+
+### Transition Standards
+
+Always include transition for interactive elements:
+
+```tsx
+// For opacity changes
+transition-opacity
+
+// For color changes
+transition-colors
+
+// For all properties
+transition-all
+
+// Duration (default 150ms)
+duration-200  // for subtle effects
+duration-300  // for more noticeable effects
+```
+
+### Focus States
+
+All inputs and buttons must have visible focus states:
+
+```tsx
+// Input focus
+focus:outline-none focus:border-[var(--text-primary)]
+
+// Button focus (optional ring)
+focus:outline-none focus:ring-2 focus:ring-[var(--text-primary)] focus:ring-offset-2
+```
+
+---
+
 ## UI Component Layer
 
 ### Required Shared Primitives
@@ -418,6 +577,78 @@ When choosing between options, follow this order:
 
 ---
 
+## Form Input Standards
+
+### Number Input Validation
+
+All numeric input fields (price, amount, leverage, etc.) **must** implement the following validation to prevent invalid user input:
+
+#### Rule 1: No Negative Numbers
+
+Numeric inputs for financial values should never allow negative numbers.
+
+**Implementation Pattern:**
+
+```tsx
+const handleAmountChange = (value: string) => {
+  // 禁止输入负数
+  if (value.startsWith('-')) return;
+  setAmount(value);
+  // ... rest of the logic
+};
+```
+
+**Applies to:**
+- Price inputs (entry price, exit price)
+- Amount inputs (position size, filled amount)
+- Leverage inputs
+- Margin inputs
+- PnL target inputs
+
+#### Rule 2: Consistent Input Styling
+
+All number inputs must use consistent styling:
+
+```tsx
+<input
+  type="number"
+  className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] focus:outline-none focus:border-[var(--text-primary)] transition-all"
+/>
+```
+
+**Key Properties:**
+- Background: `bg-[var(--bg-tertiary)]`
+- Border: `border border-[var(--border-primary)]` (always visible)
+- Focus state: `focus:border-[var(--text-primary)]`
+- Border radius: `rounded-md` (6px)
+- Padding: `px-3 py-2.5`
+- Font size: `text-sm`
+
+#### Rule 3: Reusable Handler Function
+
+For components with multiple numeric inputs, create a reusable handler:
+
+```tsx
+const handleNumberInput = (value: string, setter: (val: string) => void) => {
+  if (value.startsWith('-')) return;
+  setter(value);
+};
+
+// Usage
+<input
+  onChange={(e) => handleNumberInput(e.target.value, setPrice)}
+/>
+```
+
+### Why This Matters
+
+- **Data Integrity**: Negative values don't make sense for prices, amounts, or leverage
+- **UX Consistency**: Users get the same input behavior across all forms
+- **Bug Prevention**: Prevents calculation errors from invalid negative inputs
+- **Design Cohesion**: Maintains visual consistency across modals and forms
+
+---
+
 ## Short Version
 
 - Follow OKX visually
@@ -426,6 +657,7 @@ When choosing between options, follow this order:
 - Use Tailwind semantic tokens
 - Build shared UI primitives
 - Avoid dual-track styling systems
+- **Form inputs: no negatives, consistent styling**
 - Optimize for long-term consistency
 
 ---
