@@ -204,11 +204,26 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
 
           {/* Slider */}
           <div className="py-1">
-            <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
+            <div className="relative h-1 bg-[var(--bg-quaternary)] rounded-full mx-1.5">
+              {/* Progress bar - adjusted to not overflow */}
               <div
                 className="absolute h-full rounded-full bg-[var(--text-primary)]"
-                style={{ width: `${sliderValue}%` }}
+                style={{ 
+                  width: `calc(${sliderValue}% * 0.97 + 1.5%)`,
+                  left: '0%'
+                }}
               />
+              
+              {/* Custom Thumb - Smaller, with proper boundary */}
+              <div
+                className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-[var(--bg-secondary)] border-2 border-[var(--text-primary)] pointer-events-none ${
+                  showSliderTooltip ? 'w-3 h-3' : 'w-2 h-2'
+                }`}
+                style={{
+                  left: `calc(${sliderValue}% * 0.97 + 1.5% - ${showSliderTooltip ? 6 : 4}px)`
+                }}
+              />
+              
               <input
                 type="range"
                 min="0"
@@ -217,37 +232,38 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
                 onChange={(e) => handleSliderChange(parseInt(e.target.value))}
                 onMouseDown={() => setShowSliderTooltip(true)}
                 onMouseUp={() => setShowSliderTooltip(false)}
+                onMouseEnter={() => setShowSliderTooltip(true)}
+                onMouseLeave={() => setShowSliderTooltip(false)}
                 onTouchStart={() => setShowSliderTooltip(true)}
                 onTouchEnd={() => setShowSliderTooltip(false)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                className="absolute -inset-x-1.5 -inset-y-2 w-[calc(100%+12px)] h-5 opacity-0 cursor-pointer"
               />
+              
               {/* Percentage Tooltip */}
               {showSliderTooltip && (
                 <div
-                  className="absolute -top-8 px-2 py-1 bg-[var(--bg-tooltip)] text-white text-xs font-medium rounded pointer-events-none"
-                  style={{ left: `calc(${sliderValue}% - 20px)` }}
+                  className="absolute -top-9 px-2 py-1 bg-[var(--bg-tooltip)] text-white text-xs font-medium rounded pointer-events-none"
+                  style={{ left: `calc(${sliderValue}% * 0.97 + 1.5% - 16px)` }}
                 >
                   {Math.round(sliderValue)}%
                 </div>
               )}
-              {/* Active thumb indicator */}
-              {showSliderTooltip && (
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[var(--text-primary)] pointer-events-none"
-                  style={{ left: `calc(${sliderValue}% - ${sliderValue * 0.12}px)` }}
-                />
-              )}
-              {/* Slider marks */}
+              
+              {/* Slider marks - Hollow circles, positioned within bounds */}
               <div className="absolute inset-0 flex justify-between items-center pointer-events-none">
                 {[0, 25, 50, 75, 100].map((pct) => (
                   <div
                     key={pct}
-                    className={`w-2 h-2 rounded-full ${sliderValue >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'}`}
+                    className={`w-1.5 h-1.5 rounded-full border transition-colors ${
+                      sliderValue >= pct 
+                        ? 'bg-[var(--text-primary)] border-[var(--text-primary)]' 
+                        : 'bg-[var(--bg-secondary)] border-[var(--bg-quaternary)]'
+                    }`}
                   />
                 ))}
               </div>
             </div>
-            <div className="flex justify-between mt-1">
+            <div className="flex justify-between mt-2">
               {['0%', '25%', '50%', '75%', '100%'].map((label, idx) => (
                 <button
                   key={label}

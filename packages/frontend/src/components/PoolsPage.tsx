@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Search, TrendingUp, DollarSign, BarChart3, ChevronDown, X } from 'lucide-react';
+import { ClaimFeesModal } from './ClaimFeesModal';
 
 interface Pool {
   id: string;
@@ -335,11 +336,12 @@ interface PoolRowProps {
   pool: Pool;
   onDeposit: (pool: Pool) => void;
   onRemove: (pool: Pool) => void;
+  onClaim: (pool: Pool) => void;
   onTrade: (pool: Pool, type: 'spot' | 'perp') => void;
   connected: boolean;
 }
 
-const PoolRow: React.FC<PoolRowProps> = ({ pool, onDeposit, onRemove, onTrade, connected }) => (
+const PoolRow: React.FC<PoolRowProps> = ({ pool, onDeposit, onRemove, onClaim, onTrade, connected }) => (
   <div
     className="grid grid-cols-[minmax(140px,1.5fr)_minmax(100px,1fr)_minmax(90px,1fr)_minmax(80px,1fr)_minmax(70px,1fr)_minmax(70px,1fr)_minmax(90px,1fr)_minmax(120px,1fr)] gap-x-6 px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors even:bg-[var(--bg-tertiary)]/30"
   >
@@ -394,7 +396,7 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool, onDeposit, onRemove, onTrade, c
     {/* Fees */}
     <div className="flex items-center justify-center">
       {pool.hasFees ? (
-        <ActionButton>claim</ActionButton>
+        <ActionButton onClick={() => onClaim(pool)}>claim</ActionButton>
       ) : (
         <span className="w-[68px] h-[30px] flex items-center justify-center text-xs text-[var(--text-tertiary)]">-</span>
       )}
@@ -428,6 +430,7 @@ export const PoolsPage: React.FC<PoolsPageProps> = ({ onNavigateToTrade, connect
   const [searchQuery, setSearchQuery] = useState('');
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
+  const [claimModalOpen, setClaimModalOpen] = useState(false);
   const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
 
   const filteredPools = POOLS.filter(pool => 
@@ -450,6 +453,11 @@ export const PoolsPage: React.FC<PoolsPageProps> = ({ onNavigateToTrade, connect
     if (onNavigateToTrade) {
       onNavigateToTrade(`${pool.tokenA}/${pool.tokenB}`, type);
     }
+  };
+
+  const handleClaim = (pool: Pool) => {
+    setSelectedPool(pool);
+    setClaimModalOpen(true);
   };
 
   return (
@@ -553,6 +561,7 @@ export const PoolsPage: React.FC<PoolsPageProps> = ({ onNavigateToTrade, connect
                   pool={pool} 
                   onDeposit={handleDeposit}
                   onRemove={handleRemove}
+                  onClaim={handleClaim}
                   onTrade={handleTrade}
                   connected={connected}
                 />
@@ -585,6 +594,14 @@ export const PoolsPage: React.FC<PoolsPageProps> = ({ onNavigateToTrade, connect
         isOpen={removeModalOpen} 
         onClose={() => setRemoveModalOpen(false)} 
         pool={selectedPool}
+      />
+      <ClaimFeesModal
+        isOpen={claimModalOpen}
+        onClose={() => setClaimModalOpen(false)}
+        tokenA={selectedPool?.tokenA || ''}
+        tokenB={selectedPool?.tokenB || ''}
+        feesA={`0.001234 ${selectedPool?.tokenA || ''}`}
+        feesB={`12.456789 ${selectedPool?.tokenB || ''}`}
       />
     </div>
   );

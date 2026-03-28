@@ -649,6 +649,128 @@ const handleNumberInput = (value: string, setter: (val: string) => void) => {
 
 ---
 
+## Slider Standards
+
+### OKX-Style Slider
+
+The slider component follows OKX's design with hollow circle marks and a dynamic thumb.
+
+#### Visual Design
+
+```tsx
+<div className="py-1">
+  {/* mx-1.5 adds horizontal margin to contain the thumb */}
+  <div className="relative h-1 bg-[var(--bg-quaternary)] rounded-full mx-1.5">
+    {/* Progress bar - scaled to stay within bounds */}
+    <div
+      className="absolute h-full rounded-full bg-[var(--text-primary)]"
+      style={{ 
+        width: `calc(${sliderValue}% * 0.97 + 1.5%)`,
+        left: '0%'
+      }}
+    />
+    
+    {/* Custom Thumb - Smaller size (w-2 default, w-3 on hover) */}
+    <div
+      className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-[var(--bg-secondary)] border-2 border-[var(--text-primary)] pointer-events-none transition-all duration-100 ${
+        showSliderTooltip ? 'w-3 h-3' : 'w-2 h-2'
+      }`}
+      style={{ 
+        left: `calc(${sliderValue}% * 0.97 + 1.5% - ${showSliderTooltip ? 6 : 4}px)` 
+      }}
+    />
+    
+    {/* Input - expanded touch area, positioned to match visual */}
+    <input
+      type="range"
+      min="0"
+      max="100"
+      value={sliderValue}
+      onChange={(e) => handleSliderChange(parseInt(e.target.value))}
+      onMouseDown={() => setShowSliderTooltip(true)}
+      onMouseUp={() => setShowSliderTooltip(false)}
+      onMouseEnter={() => setShowSliderTooltip(true)}
+      onMouseLeave={() => setShowSliderTooltip(false)}
+      onTouchStart={() => setShowSliderTooltip(true)}
+      onTouchEnd={() => setShowSliderTooltip(false)}
+      className="absolute -inset-x-1.5 -inset-y-2 w-[calc(100%+12px)] h-5 opacity-0 cursor-pointer"
+    />
+    
+    {/* Percentage Tooltip */}
+    {showSliderTooltip && (
+      <div
+        className="absolute -top-9 px-2 py-1 bg-[var(--bg-tooltip)] text-white text-xs font-medium rounded pointer-events-none"
+        style={{ left: `calc(${sliderValue}% * 0.97 + 1.5% - 16px)` }}
+      >
+        {Math.round(sliderValue)}%
+      </div>
+    )}
+    
+    {/* Slider marks - Smaller size (w-1.5) */}
+    <div className="absolute inset-x-0 flex justify-between items-center pointer-events-none">
+      {[0, 25, 50, 75, 100].map((pct) => (
+        <div
+          key={pct}
+          className={`w-1.5 h-1.5 rounded-full border transition-colors ${
+            sliderValue >= pct 
+              ? 'bg-[var(--text-primary)] border-[var(--text-primary)]' 
+              : 'bg-[var(--bg-secondary)] border-[var(--bg-quaternary)]'
+          }`}
+        />
+      ))}
+    </div>
+  </div>
+  
+  {/* Labels */}
+  <div className="flex justify-between mt-2">
+    {['0%', '25%', '50%', '75%', '100%'].map((label, idx) => (
+      <button
+        key={label}
+        onClick={() => handleSliderChange(idx * 25)}
+        className={`text-[10px] transition-colors ${
+          sliderValue >= idx * 25 ? 'text-[var(--text-primary)]' : 'text-[var(--text-tertiary)]'
+        }`}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+</div>
+```
+
+#### Key Design Elements
+
+| Element | Default State | Active/Drag State |
+|---------|---------------|-------------------|
+| **Track Background** | `bg-[var(--bg-quaternary)]` | - |
+| **Progress Bar** | `bg-[var(--text-primary)]` | - |
+| **Thumb** | `w-2 h-2` white circle, black border | `w-3 h-3` slightly larger |
+| **Mark (unfilled)** | Hollow circle: white bg, gray border | - |
+| **Mark (filled)** | Solid black circle | - |
+| **Tooltip** | Hidden | Shows percentage above thumb |
+
+#### Boundary Handling
+
+To prevent the thumb from overflowing the track:
+
+1. **Add horizontal margin**: `mx-1.5` on the track container
+2. **Scale the progress bar**: Use `width: calc(${sliderValue}% * 0.97 + 1.5%)` instead of raw percentage
+3. **Adjust thumb position**: Position formula accounts for the scaling
+4. **Expand input touch area**: Use negative inset to make input wider than visual track
+
+#### Behavior
+
+1. **Thumb is always visible** - Unlike native sliders, the thumb is always shown
+2. **Thumb grows on interaction** - Mouse down/hover increases thumb size (w-2 → w-3)
+3. **Smaller thumb size** - Default `w-2 h-2` (8px) for cleaner look
+4. **Marks are hollow circles** - Unfilled marks have white center + gray border
+5. **Filled marks turn solid** - When slider passes a mark, it becomes solid black
+6. **Percentage tooltip** - Shows current value above thumb during interaction
+7. **Clickable labels** - 0%, 25%, 50%, 75%, 100% labels jump to those positions
+8. **No overflow** - Thumb stays within track bounds at 0% and 100%
+
+---
+
 ## Short Version
 
 - Follow OKX visually
