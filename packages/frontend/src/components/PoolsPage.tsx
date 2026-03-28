@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, TrendingUp, DollarSign, BarChart3, ChevronDown } from 'lucide-react';
+import { Plus, Search, TrendingUp, DollarSign, BarChart3, ChevronDown, X } from 'lucide-react';
 
 interface Pool {
   id: string;
@@ -113,11 +113,233 @@ const FeeTag: React.FC<{ text: string; tooltip: string }> = ({ text, tooltip }) 
   );
 };
 
-interface PoolRowProps {
-  pool: Pool;
+// Deposit Modal
+interface DepositModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  pool: Pool | null;
 }
 
-const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
+const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, pool }) => {
+  const [amountA, setAmountA] = useState('');
+  const [amountB, setAmountB] = useState('');
+  
+  if (!isOpen || !pool) return null;
+  
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="w-[400px] bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-primary)] overflow-hidden" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)]">
+          <span className="text-base font-semibold text-[var(--text-primary)]">Add Liquidity</span>
+          <button onClick={onClose} className="p-1 rounded-md hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        
+        {/* Content */}
+        <div className="p-4 space-y-4">
+          <div className="text-sm text-[var(--text-secondary)]">
+            Deposit tokens to provide liquidity for {pool.tokenA}/{pool.tokenB} pool
+          </div>
+          
+          {/* Token A Input */}
+          <div>
+            <label className="block text-xs text-[var(--text-secondary)] mb-1.5">{pool.tokenA} Amount</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={amountA}
+                onChange={(e) => setAmountA(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] focus:outline-none focus:border-[var(--text-primary)] transition-all"
+                placeholder="0.00"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">{pool.tokenA}</span>
+            </div>
+          </div>
+          
+          {/* Token B Input */}
+          <div>
+            <label className="block text-xs text-[var(--text-secondary)] mb-1.5">{pool.tokenB} Amount</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={amountB}
+                onChange={(e) => setAmountB(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-md text-sm bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-primary)] focus:outline-none focus:border-[var(--text-primary)] transition-all"
+                placeholder="0.00"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-tertiary)]">{pool.tokenB}</span>
+            </div>
+          </div>
+          
+          {/* Info */}
+          <div className="p-3 rounded-md bg-[var(--bg-tertiary)] text-xs text-[var(--text-secondary)]">
+            <div className="flex justify-between mb-1">
+              <span>Current Price</span>
+              <span className="text-[var(--text-primary)]">1 {pool.tokenA} = 65,432 {pool.tokenB}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Pool Share</span>
+              <span className="text-[var(--text-primary)]">~0.05%</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-[var(--border-primary)]">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-xs font-medium rounded-md border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-xs font-medium rounded-md bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90 transition-opacity"
+          >
+            Deposit
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Remove Modal
+interface RemoveModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  pool: Pool | null;
+}
+
+const RemoveModal: React.FC<RemoveModalProps> = ({ isOpen, onClose, pool }) => {
+  const [percentage, setPercentage] = useState(50);
+  const [showSliderTooltip, setShowSliderTooltip] = useState(false);
+  
+  if (!isOpen || !pool) return null;
+  
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="w-[400px] bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-primary)] overflow-hidden" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)]">
+          <span className="text-base font-semibold text-[var(--text-primary)]">Remove Liquidity</span>
+          <button onClick={onClose} className="p-1 rounded-md hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        
+        {/* Content */}
+        <div className="p-4 space-y-4">
+          <div className="text-sm text-[var(--text-secondary)]">
+            Remove your liquidity from {pool.tokenA}/{pool.tokenB} pool
+          </div>
+          
+          {/* Percentage Slider */}
+          <div>
+            <label className="block text-xs text-[var(--text-secondary)] mb-1.5">Amount to Remove</label>
+            <div className="relative h-1 bg-[var(--bg-tertiary)] rounded-full">
+              <div
+                className="absolute h-full rounded-full bg-[var(--text-primary)]"
+                style={{ width: `${percentage}%` }}
+              />
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={percentage}
+                onChange={(e) => setPercentage(parseInt(e.target.value))}
+                onMouseDown={() => setShowSliderTooltip(true)}
+                onMouseUp={() => setShowSliderTooltip(false)}
+                onTouchStart={() => setShowSliderTooltip(true)}
+                onTouchEnd={() => setShowSliderTooltip(false)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              {/* Percentage Tooltip */}
+              {showSliderTooltip && (
+                <div
+                  className="absolute -top-8 px-2 py-1 bg-[var(--bg-tooltip)] text-white text-xs font-medium rounded pointer-events-none"
+                  style={{ left: `calc(${percentage}% - 20px)` }}
+                >
+                  {Math.round(percentage)}%
+                </div>
+              )}
+              {/* Active thumb indicator */}
+              {showSliderTooltip && (
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[var(--text-primary)] pointer-events-none"
+                  style={{ left: `calc(${percentage}% - ${percentage * 0.12}px)` }}
+                />
+              )}
+              {/* Slider marks */}
+              <div className="absolute inset-0 flex justify-between items-center pointer-events-none">
+                {[0, 25, 50, 75, 100].map((pct) => (
+                  <div
+                    key={pct}
+                    className={`w-2 h-2 rounded-full ${percentage >= pct ? 'bg-[var(--text-primary)]' : 'bg-[var(--bg-quaternary)]'}`}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-between mt-1">
+              {['0%', '25%', '50%', '75%', '100%'].map((label, idx) => (
+                <button
+                  key={label}
+                  onClick={() => setPercentage(idx * 25)}
+                  className={`text-[10px] transition-colors ${
+                    percentage >= idx * 25 ? 'text-[var(--text-primary)]' : 'text-[var(--text-tertiary)]'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          {/* Preview */}
+          <div className="p-3 rounded-md bg-[var(--bg-tertiary)] space-y-2">
+            <div className="text-xs text-[var(--text-secondary)] mb-2">You will receive:</div>
+            <div className="flex justify-between text-sm">
+              <span className="text-[var(--text-primary)]">{pool.tokenA}</span>
+              <span className="text-[var(--text-primary)]">0.5</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-[var(--text-primary)]">{pool.tokenB}</span>
+              <span className="text-[var(--text-primary)]">32,716</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-[var(--border-primary)]">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-xs font-medium rounded-md border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-xs font-medium rounded-md bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90 transition-opacity"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface PoolRowProps {
+  pool: Pool;
+  onDeposit: (pool: Pool) => void;
+  onRemove: (pool: Pool) => void;
+  onTrade: (pool: Pool, type: 'spot' | 'perp') => void;
+  connected: boolean;
+}
+
+const PoolRow: React.FC<PoolRowProps> = ({ pool, onDeposit, onRemove, onTrade, connected }) => (
   <div
     className="grid grid-cols-[minmax(140px,1.5fr)_minmax(100px,1fr)_minmax(90px,1fr)_minmax(80px,1fr)_minmax(70px,1fr)_minmax(70px,1fr)_minmax(90px,1fr)_minmax(120px,1fr)] gap-x-6 px-4 py-4 border-b border-[var(--border-primary)] items-center hover:bg-[var(--bg-tertiary)] transition-colors even:bg-[var(--bg-tertiary)]/30"
   >
@@ -180,31 +402,55 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool }) => (
     
     {/* Positions */}
     <div className="flex items-center justify-center gap-3">
-      <ActionButton>deposit</ActionButton>
-      {pool.hasPosition ? (
-        <ActionButton>remove</ActionButton>
+      <ActionButton onClick={() => onDeposit(pool)}>deposit</ActionButton>
+      {connected && pool.hasPosition ? (
+        <ActionButton onClick={() => onRemove(pool)}>remove</ActionButton>
       ) : (
-        <span className="w-[68px] h-[30px] flex items-center justify-center text-xs text-[var(--text-tertiary)]">-</span>
+        <span className="w-[68px] h-[30px] flex items-center justify-center rounded-full text-xs text-[var(--text-tertiary)]">-</span>
       )}
     </div>
     
     {/* Trade */}
     <div className="flex items-center justify-center gap-2">
-      <ActionButton variant="outline">spot</ActionButton>
-      <ActionButton variant="outline">perp</ActionButton>
+      <ActionButton variant="outline" onClick={() => onTrade(pool, 'spot')}>spot</ActionButton>
+      <ActionButton variant="outline" onClick={() => onTrade(pool, 'perp')}>perp</ActionButton>
     </div>
   </div>
 );
 
-export const PoolsPage: React.FC = () => {
+interface PoolsPageProps {
+  onNavigateToTrade?: (pair: string, type: 'spot' | 'perp') => void;
+  connected?: boolean;
+}
+
+export const PoolsPage: React.FC<PoolsPageProps> = ({ onNavigateToTrade, connected = false }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'my'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
+  const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
 
   const filteredPools = POOLS.filter(pool => 
     searchQuery === '' || 
     pool.tokenA.toLowerCase().includes(searchQuery.toLowerCase()) ||
     pool.tokenB.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleDeposit = (pool: Pool) => {
+    setSelectedPool(pool);
+    setDepositModalOpen(true);
+  };
+
+  const handleRemove = (pool: Pool) => {
+    setSelectedPool(pool);
+    setRemoveModalOpen(true);
+  };
+
+  const handleTrade = (pool: Pool, type: 'spot' | 'perp') => {
+    if (onNavigateToTrade) {
+      onNavigateToTrade(`${pool.tokenA}/${pool.tokenB}`, type);
+    }
+  };
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-[var(--bg-secondary)]">
@@ -301,7 +547,16 @@ export const PoolsPage: React.FC = () => {
           {/* Table Body */}
           {activeTab === 'all' ? (
             filteredPools.length > 0 ? (
-              filteredPools.map((pool) => <PoolRow key={pool.id} pool={pool} />)
+              filteredPools.map((pool) => (
+                <PoolRow 
+                  key={pool.id} 
+                  pool={pool} 
+                  onDeposit={handleDeposit}
+                  onRemove={handleRemove}
+                  onTrade={handleTrade}
+                  connected={connected}
+                />
+              ))
             ) : (
               <div className="flex items-center justify-center py-16 text-[var(--text-tertiary)]">
                 No pools found
@@ -319,6 +574,18 @@ export const PoolsPage: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Modals */}
+      <DepositModal 
+        isOpen={depositModalOpen} 
+        onClose={() => setDepositModalOpen(false)} 
+        pool={selectedPool}
+      />
+      <RemoveModal 
+        isOpen={removeModalOpen} 
+        onClose={() => setRemoveModalOpen(false)} 
+        pool={selectedPool}
+      />
     </div>
   );
 };

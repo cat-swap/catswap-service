@@ -9,10 +9,9 @@ import './App.css';
 
 type Page = 'spot' | 'perps' | 'pools';
 
-
-
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('spot');
+  const [selectedPair, setSelectedPair] = useState<string>('BTC/USDT');
   const { theme, toggleTheme } = useTheme();
   const { wallet, isConnecting, connect, disconnect } = useWallet();
 
@@ -24,16 +23,21 @@ function App() {
     }
   };
 
+  const handleNavigateToTrade = (pair: string, type: 'spot' | 'perp') => {
+    setSelectedPair(pair);
+    setCurrentPage(type === 'spot' ? 'spot' : 'perps');
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'spot':
-        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
+        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} selectedPair={selectedPair} />;
       case 'perps':
-        return <PerpsTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
+        return <PerpsTradingPage wallet={wallet} onConnectWallet={handleConnect} selectedPair={selectedPair} />;
       case 'pools':
-        return <PoolsPage />;
+        return <PoolsPage onNavigateToTrade={handleNavigateToTrade} connected={wallet.connected} />;
       default:
-        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} />;
+        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} selectedPair={selectedPair} />;
     }
   };
 

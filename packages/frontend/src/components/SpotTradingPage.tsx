@@ -10,6 +10,7 @@ type TimeFrame = '1m' | '5m' | '15m' | '1H' | '4H' | '1D' | '1W';
 interface SpotTradingPageProps {
   wallet: WalletInfo;
   onConnectWallet: () => void;
+  selectedPair?: string;
 }
 
 const TOKEN_ICONS: Record<string, string> = {
@@ -26,8 +27,12 @@ const TOKEN_COLORS: Record<string, string> = {
 export const SpotTradingPage: React.FC<SpotTradingPageProps> = ({
   wallet,
   onConnectWallet,
+  selectedPair: initialPair = 'BTC/USDT',
 }) => {
-  const [selectedPair, setSelectedPair] = useState<TradingPair>(tradingPairs[0]);
+  const [selectedPair, setSelectedPair] = useState<TradingPair>(() => {
+    const found = tradingPairs.find(p => p.symbol === initialPair);
+    return found || tradingPairs[0];
+  });
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('15m');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
