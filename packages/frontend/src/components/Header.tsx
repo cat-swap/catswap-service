@@ -1,20 +1,19 @@
 import * as React from 'react';
 import { Sun, Moon, ChevronDown, Wallet, LogOut } from 'lucide-react';
 import { WalletInfo } from '../types';
-
-type Page = 'spot' | 'perps' | 'pools';
+import { AppPage, getPagePath } from '../seo/routeMeta';
 
 interface HeaderProps {
   wallet: WalletInfo;
   onConnectWallet: () => void;
   onDisconnect: () => void;
-  currentPage: Page;
-  onPageChange: (page: Page) => void;
+  currentPage: AppPage;
+  onPageChange: (page: AppPage) => void;
   theme: 'dark' | 'light';
   onToggleTheme: () => void;
 }
 
-const navItems: { id: Page; label: string }[] = [
+const navItems: { id: AppPage; label: string }[] = [
   { id: 'spot', label: 'Spot' },
   { id: 'perps', label: 'Perps' },
   { id: 'pools', label: 'Pools' },
@@ -80,9 +79,17 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="h-10 sm:h-11 flex items-center justify-between">
           {/* Logo & Brand */}
           <div className="flex items-center gap-8">
-            <div 
+            <a
+              href={getPagePath('spot')}
               className="flex items-center cursor-pointer group"
-              onClick={() => onPageChange('spot')}
+              onClick={(event) => {
+                event.preventDefault();
+                if (currentPage === 'spot') {
+                  return;
+                }
+
+                onPageChange('spot');
+              }}
             >
               {/* Logo - 根据主题切换 */}
               <img 
@@ -90,14 +97,22 @@ export const Header: React.FC<HeaderProps> = ({
                 alt="CatSwap"
                 className="h-[26px] w-auto"
               />
-            </div>
+            </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => onPageChange(item.id)}
+                  href={getPagePath(item.id)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    if (currentPage === item.id) {
+                      return;
+                    }
+
+                    onPageChange(item.id);
+                  }}
                   className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                     currentPage === item.id
                       ? 'text-[var(--text-primary)]'
@@ -108,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
                   {currentPage === item.id && (
                     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[var(--text-primary)] rounded-full" />
                   )}
-                </button>
+                </a>
               ))}
             </nav>
           </div>
@@ -205,9 +220,17 @@ export const Header: React.FC<HeaderProps> = ({
     {/* Mobile Bottom Navigation */}
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-[var(--border-primary)] bg-[var(--bg-secondary)] pb-safe">
       {navItems.map((item) => (
-        <button
+        <a
           key={item.id}
-          onClick={() => onPageChange(item.id)}
+          href={getPagePath(item.id)}
+          onClick={(event) => {
+            event.preventDefault();
+            if (currentPage === item.id) {
+              return;
+            }
+
+            onPageChange(item.id);
+          }}
           className={`flex-1 py-3 text-xs font-medium transition-all duration-200 ${
             currentPage === item.id
               ? 'text-[var(--text-primary)]'
@@ -215,7 +238,7 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           {item.label}
-        </button>
+        </a>
       ))}
     </nav>
     </>

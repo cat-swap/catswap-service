@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react()],
   resolve: {
     alias: {
@@ -14,12 +14,16 @@ export default defineConfig({
     port: 3000,
     host: true,
   },
+  preview: {
+    port: 5001,
+    host: true,
+  },
   build: {
     outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks: isSsrBuild ? undefined : {
           // Separate vendor chunks for better caching
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           // Separate chart library (large dependency)
@@ -31,4 +35,4 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000, // Adjust warning limit (in kB)
   },
-});
+}));

@@ -1,17 +1,33 @@
-import { useState } from 'react';
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SpotTradingPage } from './components/SpotTradingPage';
 import { PerpsTradingPage } from './components/PerpsTradingPage';
 import { PoolsPage } from './components/PoolsPage';
+import { usePageMeta } from './hooks/usePageMeta';
 import { useWallet } from './hooks/useWallet';
 import { useTheme } from './hooks/useTheme';
-import './App.css';
+import { AppPage, getPageKeyFromPath, getPagePath } from './seo/routeMeta';
 
-type Page = 'spot' | 'perps' | 'pools';
+interface AppLayoutContext {
+  connectWallet: () => Promise<void>;
+  navigateToTrade: (pair: string, type: 'spot' | 'perp') => void;
+  connected: boolean;
+  selectedPair?: string;
+  wallet: ReturnType<typeof useWallet>['wallet'];
+}
 
-function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('spot');
-  const [selectedPair, setSelectedPair] = useState<string>('BTC/USDT');
+const createTradeSearch = (pair?: string) => {
+  if (!pair) return '';
+
+  return `?pair=${encodeURIComponent(pair)}`;
+};
+
+const AppLayout = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const currentPage = getPageKeyFromPath(location.pathname);
+  const selectedPair = searchParams.get('pair') ?? undefined;
   const { theme, toggleTheme } = useTheme();
   const { wallet, isConnecting, connect, disconnect } = useWallet();
 
@@ -24,21 +40,14 @@ function App() {
   };
 
   const handleNavigateToTrade = (pair: string, type: 'spot' | 'perp') => {
-    setSelectedPair(pair);
-    setCurrentPage(type === 'spot' ? 'spot' : 'perps');
+    const pathname = type === 'spot' ? getPagePath('spot') : getPagePath('perps');
+    navigate(`${pathname}${createTradeSearch(pair)}`);
   };
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'spot':
-        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} selectedPair={selectedPair} />;
-      case 'perps':
-        return <PerpsTradingPage wallet={wallet} onConnectWallet={handleConnect} selectedPair={selectedPair} />;
-      case 'pools':
-        return <PoolsPage onNavigateToTrade={handleNavigateToTrade} connected={wallet.connected} />;
-      default:
-        return <SpotTradingPage wallet={wallet} onConnectWallet={handleConnect} selectedPair={selectedPair} />;
-    }
+  const handlePageChange = (page: AppPage) => {
+    const nextPath = getPagePath(page);
+    const nextSearch = page === 'pools' ? '' : createTradeSearch(selectedPair);
+    navigate(`${nextPath}${nextSearch}`);
   };
 
   return (
@@ -48,16 +57,23 @@ function App() {
         onConnectWallet={handleConnect}
         onDisconnect={disconnect}
         currentPage={currentPage}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
 
       <main className="pt-[45px] sm:pt-[52px] pb-20 md:pb-0 min-h-screen">
-        {renderPage()}
+        <Outlet
+          context={{
+            connectWallet: handleConnect,
+            connected: wallet.connected,
+            navigateToTrade: handleNavigateToTrade,
+            selectedPair,
+            wallet,
+          }}
+        />
       </main>
 
-      {/* Simple Loading Overlay */}
       {isConnecting && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-4">
@@ -67,6 +83,60 @@ function App() {
         </div>
       )}
     </div>
+  );
+};
+
+const useAppLayoutContext = () => useOutletContext<AppLayoutContext>();
+
+const SpotRoute = () => {
+  const { connectWallet, selectedPair, wallet } = useAppLayoutContext();
+  usePageMeta('spot');
+
+  return (
+    <SpotTradingPage
+      wallet={wallet}
+      onConnectWallet={connectWallet}
+      selectedPair={selectedPair}
+    />
+  );
+};
+
+const PerpsRoute = () => {
+  const { connectWallet, selectedPair, wallet } = useAppLayoutContext();
+  usePageMeta('perps');
+
+  return (
+    <PerpsTradingPage
+      wallet={wallet}
+      onConnectWallet={connectWallet}
+      selectedPair={selectedPair}
+    />
+  );
+};
+
+const PoolsRoute = () => {
+  const { connected, navigateToTrade } = useAppLayoutContext();
+  usePageMeta('pools');
+
+  return (
+    <PoolsPage
+      connected={connected}
+      onNavigateToTrade={navigateToTrade}
+    />
+  );
+};
+
+export function App() {
+  return (
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route index element={<SpotRoute />} />
+        <Route path="perps" element={<PerpsRoute />} />
+        <Route path="pools" element={<PoolsRoute />} />
+        <Route path="spot" element={<Navigate replace to="/" />} />
+        <Route path="*" element={<Navigate replace to="/" />} />
+      </Route>
+    </Routes>
   );
 }
 

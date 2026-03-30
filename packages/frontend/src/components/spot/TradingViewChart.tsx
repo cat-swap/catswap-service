@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { createChart, IChartApi, ISeriesApi, CandlestickData, HistogramData, Time, CandlestickSeries, HistogramSeries } from 'lightweight-charts';
+import type { CandlestickData, HistogramData, IChartApi, ISeriesApi, Time } from 'lightweight-charts';
 import { CandleData, TradingPair } from '../../types';
 
 type TimeFrame = '1m' | '5m' | '15m' | '1H' | '4H' | '1D' | '1W';
@@ -35,98 +35,109 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
 
   // Initialize chart
   useEffect(() => {
-    if (!chartContainerRef.current) return;
+    if (!chartContainerRef.current || typeof window === 'undefined') return;
 
-    const chart = createChart(chartContainerRef.current, {
-      layout: {
-        background: { color: 'transparent' },
-        textColor: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#888',
-      },
-      grid: {
-        vertLines: { visible: false },
-        horzLines: { visible: false },
-      },
-      crosshair: {
-        mode: 1,
-        vertLine: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-tertiary').trim() || '#758696',
-          style: 2,
-          width: 1,
-          labelBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-tertiary').trim() || '#758696',
+    let isActive = true;
+    let resizeObserver: ResizeObserver | null = null;
+
+    const setupChart = async () => {
+      const { CandlestickSeries, HistogramSeries, createChart } = await import('lightweight-charts');
+      if (!isActive || !chartContainerRef.current) return;
+
+      const chart = createChart(chartContainerRef.current, {
+        layout: {
+          background: { color: 'transparent' },
+          textColor: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#888',
         },
-        horzLine: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-tertiary').trim() || '#758696',
-          style: 2,
-          width: 1,
-          labelBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-tertiary').trim() || '#758696',
+        grid: {
+          vertLines: { visible: false },
+          horzLines: { visible: false },
         },
-      },
-      rightPriceScale: {
-        borderVisible: false,
+        crosshair: {
+          mode: 1,
+          vertLine: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-tertiary').trim() || '#758696',
+            style: 2,
+            width: 1,
+            labelBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-tertiary').trim() || '#758696',
+          },
+          horzLine: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-tertiary').trim() || '#758696',
+            style: 2,
+            width: 1,
+            labelBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-tertiary').trim() || '#758696',
+          },
+        },
+        rightPriceScale: {
+          borderVisible: false,
+          scaleMargins: {
+            top: 0.1,
+            bottom: 0.2,
+          },
+        },
+        timeScale: {
+          borderVisible: false,
+          timeVisible: true,
+          secondsVisible: false,
+        },
+        handleScroll: {
+          vertTouchDrag: false,
+        },
+      });
+
+      const candleSeries = chart.addSeries(CandlestickSeries, {
+        upColor: '#0ECB81',
+        downColor: '#F6465D',
+        borderUpColor: '#0ECB81',
+        borderDownColor: '#F6465D',
+        wickUpColor: '#0ECB81',
+        wickDownColor: '#F6465D',
+      });
+
+      const volumeSeries = chart.addSeries(HistogramSeries, {
+        color: '#26a69a',
+        priceFormat: {
+          type: 'volume',
+        },
+        priceScaleId: '',
+      });
+
+      volumeSeries.priceScale().applyOptions({
         scaleMargins: {
-          top: 0.1,
-          bottom: 0.2,
+          top: 0.85,
+          bottom: 0,
         },
-      },
-      timeScale: {
-        borderVisible: false,
-        timeVisible: true,
-        secondsVisible: false,
-      },
-      handleScroll: {
-        vertTouchDrag: false,
-      },
-    });
+      });
 
-    // Candlestick series
-    const candleSeries = chart.addSeries(CandlestickSeries, {
-      upColor: '#0ECB81',
-      downColor: '#F6465D',
-      borderUpColor: '#0ECB81',
-      borderDownColor: '#F6465D',
-      wickUpColor: '#0ECB81',
-      wickDownColor: '#F6465D',
-    });
+      chartRef.current = chart;
+      candleSeriesRef.current = candleSeries;
+      volumeSeriesRef.current = volumeSeries;
+      setIsChartReady(true);
 
-    // Volume series
-    const volumeSeries = chart.addSeries(HistogramSeries, {
-      color: '#26a69a',
-      priceFormat: {
-        type: 'volume',
-      },
-      priceScaleId: '',
-    });
-    volumeSeries.priceScale().applyOptions({
-      scaleMargins: {
-        top: 0.85,
-        bottom: 0,
-      },
-    });
+      const handleResize = () => {
+        if (chartContainerRef.current && chartRef.current) {
+          chartRef.current.applyOptions({
+            width: chartContainerRef.current.clientWidth,
+            height: chartContainerRef.current.clientHeight,
+          });
+        }
+      };
 
-    chartRef.current = chart;
-    candleSeriesRef.current = candleSeries;
-    volumeSeriesRef.current = volumeSeries;
-    setIsChartReady(true);
-
-    // Handle resize
-    const handleResize = () => {
-      if (chartContainerRef.current && chartRef.current) {
-        chartRef.current.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-          height: chartContainerRef.current.clientHeight,
-        });
-      }
+      resizeObserver = new ResizeObserver(handleResize);
+      resizeObserver.observe(chartContainerRef.current);
+      handleResize();
     };
 
-    const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(chartContainerRef.current);
+    void setupChart();
 
     return () => {
-      resizeObserver.disconnect();
-      chart.remove();
+      isActive = false;
+      resizeObserver?.disconnect();
+      chartRef.current?.remove();
       chartRef.current = null;
       candleSeriesRef.current = null;
       volumeSeriesRef.current = null;
+      setIsChartReady(false);
     };
   }, []);
 

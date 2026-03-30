@@ -1,0 +1,8 @@
+# CatSwap
+
+CatSwap is a Bitcoin L2 DEX focused on spot trading, perpetual futures, and liquidity pools.
+
+## Core routes
+/ - CatSwap Spot Trading | Bitcoin L2 DEX
+/perps - CatSwap Perpetuals | Bitcoin L2 DEX
+/pools - CatSwap Liquidity Pools | Bitcoin L2 DEX

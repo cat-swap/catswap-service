@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Star, ChevronDown } from 'lucide-react';
 import { TradingPair, WalletInfo } from '../types';
 import { tradingPairs, generateCandleData } from '../data/mockData';
@@ -37,6 +37,13 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
   const [isFavorite, setIsFavorite] = useState(false);
   const [mobileFormOpen, setMobileFormOpen] = useState(false);
   const [mobileFormSide, setMobileFormSide] = useState<'open' | 'close'>('open');
+
+  useEffect(() => {
+    const found = tradingPairs.find(p => p.symbol === initialPair);
+    if (found) {
+      setSelectedPair(found);
+    }
+  }, [initialPair]);
 
   const candleData = useMemo(() => generateCandleData(selectedPair.price), [selectedPair]);
 
