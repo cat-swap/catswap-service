@@ -107,7 +107,7 @@ export const ClaimFeesModal: React.FC<ClaimFeesModalProps> = ({
             disabled={isClaiming || claimed}
             className={`w-full py-3 rounded-full text-sm font-semibold transition-all ${
               claimed
-                ? 'bg-[#0ECB81] text-white'
+                ? 'bg-[#02C976] text-white'
                 : 'bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90'
             } disabled:cursor-not-allowed`}
           >

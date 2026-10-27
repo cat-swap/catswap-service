@@ -250,7 +250,7 @@ export const CalculatorModal: React.FC<CalculatorModalProps> = ({
                   onClick={() => setSide('long')}
                   className={`px-4 py-1 text-sm font-semibold rounded-md transition-colors ${
                     side === 'long'
-                      ? 'bg-[#0ECB81] text-white'
+                      ? 'bg-[#02C976] text-white'
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -566,13 +566,13 @@ export const CalculatorModal: React.FC<CalculatorModalProps> = ({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-xs text-[var(--text-secondary)]">PnL</span>
-                      <span className={`text-xs ${pnlResults.pnl >= 0 ? 'text-[#0ECB81]' : 'text-[#F6465D]'}`}>
+                      <span className={`text-xs ${pnlResults.pnl >= 0 ? 'text-[#02C976]' : 'text-[#F6465D]'}`}>
                         {pnlResults.pnl >= 0 ? '+' : ''}{formatNumber(pnlResults.pnl)} {quoteToken}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-xs text-[var(--text-secondary)]">PnL %</span>
-                      <span className={`text-xs ${pnlResults.pnlPercent >= 0 ? 'text-[#0ECB81]' : 'text-[#F6465D]'}`}>
+                      <span className={`text-xs ${pnlResults.pnlPercent >= 0 ? 'text-[#02C976]' : 'text-[#F6465D]'}`}>
                         {pnlResults.pnlPercent >= 0 ? '+' : ''}{formatNumber(pnlResults.pnlPercent)}%
                       </span>
                     </div>

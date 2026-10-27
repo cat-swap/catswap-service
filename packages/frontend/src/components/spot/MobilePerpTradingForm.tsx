@@ -64,7 +64,7 @@ export const MobilePerpTradingForm: React.FC<MobilePerpTradingFormProps> = ({
                 onClick={() => setMode('open')}
                 className={`py-2.5 text-sm font-semibold rounded-md transition-colors ${
                   isOpenMode
-                    ? 'bg-[#0ECB81] text-white'
+                    ? 'bg-[#02C976] text-white'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
@@ -301,7 +301,7 @@ export const MobilePerpTradingForm: React.FC<MobilePerpTradingFormProps> = ({
                 {isOpenMode ? (
                   <>
                     <button
-                      className="w-full py-3 rounded-full text-base font-semibold bg-[#0ECB81] text-white"
+                      className="w-full py-3 rounded-full text-base font-semibold bg-[#02C976] text-white"
                       disabled={!amount || parseFloat(amount) <= 0}
                     >
                       Long
@@ -316,7 +316,7 @@ export const MobilePerpTradingForm: React.FC<MobilePerpTradingFormProps> = ({
                 ) : (
                   <>
                     <button
-                      className="w-full py-3 rounded-full text-base font-semibold bg-[#0ECB81] text-white"
+                      className="w-full py-3 rounded-full text-base font-semibold bg-[#02C976] text-white"
                     >
                       Close short
                     </button>

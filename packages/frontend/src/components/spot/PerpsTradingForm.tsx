@@ -82,7 +82,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
             onClick={() => setMode('open')}
             className={`py-2 text-sm font-semibold rounded-md transition-colors ${
               isOpenMode
-                ? 'bg-[#0ECB81] text-white'
+                ? 'bg-[#02C976] text-white'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
@@ -304,7 +304,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
                 {isOpenMode ? (
                   <>
                     <button
-                      className="w-full py-3 rounded-full text-sm font-semibold bg-[#0ECB81] text-white"
+                      className="w-full py-3 rounded-full text-sm font-semibold bg-[#02C976] text-white"
                       disabled={!amount || parseFloat(amount) <= 0}
                     >
                       Long
@@ -319,7 +319,7 @@ export const PerpsTradingForm: React.FC<PerpsTradingFormProps> = ({
                 ) : (
                   <>
                     <button
-                      className="w-full py-3 rounded-full text-sm font-semibold bg-[#0ECB81] text-white"
+                      className="w-full py-3 rounded-full text-sm font-semibold bg-[#02C976] text-white"
                     >
                       Close short
                     </button>

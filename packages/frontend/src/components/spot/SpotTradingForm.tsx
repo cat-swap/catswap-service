@@ -82,7 +82,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
   };
 
   const isBuy = orderSide === 'buy';
-  const buttonColor = isBuy ? 'bg-[#0ECB81] hover:bg-[#0BC47A]' : 'bg-[#F6465D] hover:bg-[#E03A4F]';
+  const buttonColor = isBuy ? 'bg-[#02C976] hover:bg-[#02A566]' : 'bg-[#F6465D] hover:bg-[#E03A4F]';
   const buttonTextColor = isBuy ? 'text-black' : 'text-white';
 
   // Margin required when margin is enabled
@@ -133,7 +133,7 @@ export const SpotTradingForm: React.FC<SpotTradingFormProps> = ({
           onClick={() => setOrderSide('buy')}
           className={`py-2.5 text-sm font-semibold rounded transition-colors ${
             isBuy
-              ? 'bg-[#0ECB81] text-black'
+              ? 'bg-[#02C976] text-black'
               : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >

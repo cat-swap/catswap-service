@@ -58,7 +58,7 @@ export const SpotTradingPage: React.FC<SpotTradingPageProps> = ({
 
   const baseToken = selectedPair.symbol.split('/')[0];
   const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
-  const priceChangeColor = selectedPair.change24h >= 0 ? 'text-[#0ECB81]' : 'text-[#F6465D]';
+  const priceChangeColor = selectedPair.change24h >= 0 ? 'text-[#02C976]' : 'text-[#F6465D]';
   const priceChangeSign = selectedPair.change24h >= 0 ? '+' : '';
 
   return (
@@ -159,7 +159,7 @@ export const SpotTradingPage: React.FC<SpotTradingPageProps> = ({
               setMobileFormSide('buy');
               setMobileFormOpen(true);
             }}
-            className="flex-1 py-3 bg-[#0ECB81] text-black text-sm font-semibold rounded-md"
+            className="flex-1 py-3 bg-[#02C976] text-black text-sm font-semibold rounded-md"
           >
             Buy {baseToken}
           </button>

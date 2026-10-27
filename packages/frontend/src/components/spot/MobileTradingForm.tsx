@@ -47,7 +47,7 @@ export const MobileTradingForm: React.FC<MobileTradingFormProps> = ({
   if (!isOpen) return null;
 
   const isBuy = orderSide === 'buy';
-  const buttonColor = isBuy ? 'bg-[#0ECB81]' : 'bg-[#F6465D]';
+  const buttonColor = isBuy ? 'bg-[#02C976]' : 'bg-[#F6465D]';
   const buttonText = isBuy ? 'Buy' : 'Sell';
   const buttonTextColor = isBuy ? 'text-black' : 'text-white';
 
@@ -68,7 +68,7 @@ export const MobileTradingForm: React.FC<MobileTradingFormProps> = ({
             onClick={() => setOrderSide('buy')}
             className={`py-3 text-sm font-semibold rounded-md transition-colors ${
               isBuy
-                ? 'bg-[#0ECB81] text-black'
+                ? 'bg-[#02C976] text-black'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >

@@ -55,7 +55,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
   const getTokenColor = (symbol: string) => TOKEN_COLORS[symbol.split('/')[0]] || '#888';
 
   const quoteToken = selectedPair.symbol.split('/')[1] || 'USDT';
-  const priceChangeColor = selectedPair.change24h >= 0 ? 'text-[#0ECB81]' : 'text-[#F6465D]';
+  const priceChangeColor = selectedPair.change24h >= 0 ? 'text-[#02C976]' : 'text-[#F6465D]';
   const priceChangeSign = selectedPair.change24h >= 0 ? '+' : '';
 
   return (
@@ -123,7 +123,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[var(--text-tertiary)]">Funding</span>
-                  <span className="text-[#0ECB81] font-medium">+0.01%</span>
+                  <span className="text-[#02C976] font-medium">+0.01%</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[var(--text-tertiary)]">Countdown</span>
@@ -167,7 +167,7 @@ export const PerpsTradingPage: React.FC<PerpsTradingPageProps> = ({
               setMobileFormSide('open');
               setMobileFormOpen(true);
             }}
-            className="flex-1 py-3 bg-[#0ECB81] text-black text-sm font-semibold rounded-md"
+            className="flex-1 py-3 bg-[#02C976] text-black text-sm font-semibold rounded-md"
           >
             Open
           </button>

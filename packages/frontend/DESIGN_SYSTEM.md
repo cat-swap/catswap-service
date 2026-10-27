@@ -248,7 +248,7 @@ Semantic classes:
 
 ```tsx
 // Long/Buy - Green
-<button className="py-3 rounded-full text-sm font-semibold bg-[#0ECB81] text-white hover:opacity-90 transition-opacity">
+<button className="py-3 rounded-full text-sm font-semibold bg-[#02C976] text-white hover:opacity-90 transition-opacity">
   Long
 </button>
 
@@ -259,7 +259,7 @@ Semantic classes:
 ```
 
 **Properties:**
-- Long/Buy: `bg-[#0ECB81] text-white`
+- Long/Buy: `bg-[#02C976] text-white`
 - Short/Sell: `bg-[#F6465D] text-white`
 - Border radius: `rounded-full`
 - Hover: `hover:opacity-90 transition-opacity`

@@ -86,11 +86,11 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
       });
 
       const candleSeries = chart.addSeries(CandlestickSeries, {
-        upColor: '#0ECB81',
+        upColor: '#02C976',
         downColor: '#F6465D',
-        borderUpColor: '#0ECB81',
+        borderUpColor: '#02C976',
         borderDownColor: '#F6465D',
-        wickUpColor: '#0ECB81',
+        wickUpColor: '#02C976',
         wickDownColor: '#F6465D',
       });
 
@@ -156,7 +156,7 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
     const formattedVolumes: HistogramData[] = candleData.map(d => ({
       time: (d.time / 1000) as Time,
       value: d.volume,
-      color: d.close >= d.open ? '#0ECB81' : '#F6465D',
+      color: d.close >= d.open ? '#02C976' : '#F6465D',
     }));
 
     candleSeriesRef.current.setData(formattedCandles);

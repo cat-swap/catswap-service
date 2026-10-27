@@ -30,15 +30,15 @@
 @layer base {
   :root {
     /* OKX Brand Colors */
-    --okx-primary: #2ED4A7;
-    --okx-primary-hover: #25B08D;
-    --okx-primary-light: rgba(46, 212, 167, 0.1);
+    --okx-primary: #02C976;
+    --okx-primary-hover: #02A566;
+    --okx-primary-light: rgba(2, 201, 118, 0.1);
     
     /* Trading Colors - Always consistent */
-    --color-buy: #0ECB81;
-    --color-buy-hover: #0AB46F;
-    --color-buy-light: rgba(14, 203, 129, 0.1);
-    --color-buy-bg: rgba(14, 203, 129, 0.08);
+    --color-buy: #02C976;
+    --color-buy-hover: #02A566;
+    --color-buy-light: rgba(2, 201, 118, 0.1);
+    --color-buy-bg: rgba(2, 201, 118, 0.08);
     
     --color-sell: #F6465D;
     --color-sell-hover: #E03A50;
@@ -78,7 +78,7 @@
     --okx-border: #2B3139;
     --okx-text: #EAECEF;
     --okx-text-secondary: #848E9C;
-    --okx-success: #0ECB81;
+    --okx-success: #02C976;
     --okx-danger: #F6465D;
     --okx-warning: #F0B90B;
     
